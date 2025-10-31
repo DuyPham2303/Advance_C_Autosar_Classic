@@ -1,0 +1,57 @@
+{
+    "tasks": [
+        {
+            "type": "cppbuild",
+            "label": "Build-C-program",
+            "command": "C:/MinGW/msys64/mingw64/bin/gcc.exe",
+            "args": [
+                "-fdiagnostics-color=always",
+                "-g",
+                "-Wall",
+                "-Warray-bounds",
+                "-Werror",
+                "-Wextra",
+                "-std=c17",
+                "parseJson.c",
+                "readfile.c",
+                "main.c",
+                //"${file}",
+                //"*.c",
+                "-o",
+                "${fileDirname}\\${fileBasenameNoExtension}.exe"
+                //"main.exe"
+            ],
+            "options": {
+                "cwd": "${fileDirname}"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "detail": "C:\\MinGW\\msys64\\mingw64\\bin\\gcc.exe"
+        },
+        {
+            "label": "Open Terminal at Current File",
+            "type": "shell",
+            "command": "bash",
+            "args": [
+                "${workspaceFolder}/Script/cd_to_current_file.sh",
+                "${file}"
+            ],
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "new"
+            },
+            "problemMatcher": [],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            }
+        }
+    ],
+    "version": "2.0.0"
+}

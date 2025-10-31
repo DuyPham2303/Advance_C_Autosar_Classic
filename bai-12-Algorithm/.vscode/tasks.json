@@ -1,0 +1,65 @@
+{
+    "tasks": [
+        {
+            "type": "cppbuild",
+            "label": "Build-C-program",
+            "command": "C:/MinGW/msys64/mingw64/bin/gcc.exe",
+            "args": [
+                "-fdiagnostics-color=always",
+                "-g",
+                //"-Wall",
+                //"-Warray-bounds",
+                //"-Werror",
+                //"-Wextra",
+                "-std=c17",
+                "${file}",
+                "-o",
+                //"${fileDirname}\\${fileBasenameNoExtension}.exe"
+                "${fileDirname}/run.exe",
+            ],
+            "options": {
+                "cwd": "${fileDirname}"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "detail": "C:\\MinGW\\msys64\\mingw64\\bin\\gcc.exe"
+        },
+        {
+            "label": "Remove-ASLR",
+            "type": "shell",
+            "command": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.39.33519\\bin\\Hostx64\\x64\\editbin.exe",
+            "args": [
+                "/DYNAMICBASE:NO",
+                "${fileDirname}/run.exe",
+            ],
+            "dependsOn": "Build-C-program",
+            "problemMatcher": [],
+            "group": "build"
+        },
+        {
+            "label": "Open Terminal at Current File",
+            "type": "shell",
+            "command": "bash",
+            "args": [
+                "${workspaceFolder}/Script/cd_to_current_file.sh",
+                "${file}"
+            ],
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "new"
+            },
+            "problemMatcher": [],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            }
+        }
+    ],
+    "version": "2.0.0"
+}

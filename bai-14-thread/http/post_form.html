@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Gửi dữ liệu tới Server</title>
+</head>
+<body>
+  <h2>Form Gửi Dữ Liệu POST tới /save-data</h2>
+
+  <form id="dataForm">
+    <textarea id="jsonInput" rows="6" cols="50">
+{
+  "temp": 28.5,
+  "voltage": 3.2,
+  "status": "OK"
+}
+    </textarea><br><br>
+
+    <button type="submit">Gửi dữ liệu</button>
+  </form>
+
+  <p id="result"></p>
+
+  <script>
+    document.getElementById("dataForm").addEventListener("submit", async function(e) {
+      e.preventDefault();
+
+      const json = document.getElementById("jsonInput").value;
+      const res = await fetch("http://localhost:8080/save-data", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: json
+      });
+
+      const text = await res.text();
+      document.getElementById("result").innerText = "Phản hồi từ server: " + text;
+    });
+  </script>
+</body>
+</html>

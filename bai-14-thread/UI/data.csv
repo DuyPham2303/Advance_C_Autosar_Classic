@@ -1,0 +1,9 @@
+temp,27.03
+voltage,59.32
+current,1.35
+torque,5.00
+currentSpeed,20.00
+requestedSpeed,20
+can,0x3F0 8 03 EB 16 00 00 00 00 00
+newTemperature,45.99
+newStatus,OK

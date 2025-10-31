@@ -1,0 +1,407 @@
+/*
+ * =====================================================================================
+ *  Project  : AUTOSAR-CP OS Shim (POSIX/Pthread)
+ *  File     : Os_Posix.c
+ *  Author   : HALA Academy
+ *  Purpose  : Lớp giả lập (shim) cho OS AUTOSAR Classic chạy mô phỏng trên PC/macOS
+ *             sử dụng pthread. Cung cấp các API tối thiểu:
+ *               - Lifecycle  : StartOS, ShutdownOS
+ *               - Task       : ActivateTask, TerminateTask
+ *               - Event      : WaitEvent, SetEvent, GetEvent, ClearEvent
+ *               - Alarm (ms) : SetRelAlarm
+ *
+ *  Thiết kế bám sát khái niệm AUTOSAR:
+ *    - Task      ↔ pthread_t (mỗi ActivateTask tạo 1 thread chạy thân TASK())
+ *    - Event     ↔ cặp mutex/condvar + bitmask (dành cho Extended Task, ví dụ Task_Com)
+ *    - Counter   ↔ (bỏ qua), Alarm dùng thread ngủ theo ms để phát sinh chu kỳ
+ *    - Schedule  ↔ (bỏ qua), đủ cho mô phỏng chu kỳ 10/100 ms
+ *
+ *  Ghi chú:
+ *    - Đây là mã MÔ PHỎNG, KHÔNG phải OS RTOS thật; không có ưu tiên/preemptive.
+ *    - API/kiểu dữ liệu công khai định nghĩa tại Os.h / Os_Types.h / Os_Cfg.h.
+ *
+ *  © HALA Academy. Dùng cho mục đích học tập & mô phỏng.
+ * =====================================================================================
+ */
+
+#include "Os.h"        /* API & kiểu dữ liệu OS công khai */
+
+#include <pthread.h>   /* pthread_t, mutex, condvar */
+#include <stdatomic.h> /* atomic_int cho cờ “đang chạy” */
+#include <unistd.h>    /* sleep/usleep/pause */
+#include <time.h>      /* nanosleep */
+#include <stdio.h>     /* printf, perror */
+#include <string.h>    /* memset (nếu cần) */
+#include <signal.h>    /* _exit trên POSIX */
+#include <errno.h>     /* errno cho log lỗi */
+
+/* ****************************************************************************************
+ * TIỆN ÍCH THỜI GIAN
+ * - Hàm ngủ theo mili-giây dùng nanosleep để tránh trôi đáng kể (drift nhỏ vẫn có).
+ * **************************************************************************************** */
+static void OS_SleepMs(uint32_t ms)
+{
+    struct timespec ts;
+    ts.tv_sec  = (time_t)(ms / 1000u);
+    ts.tv_nsec = (long)((ms % 1000u) * 1000000L);
+    (void)nanosleep(&ts, NULL);
+}
+
+/* ****************************************************************************************
+ * QUẢN LÝ TASK (Task Control)
+ * - Mỗi Task AUTOSAR được ánh xạ sang một pthread (run-once).
+ * - Task_Com là extended-task chạy vòng lặp WaitEvent() nên có thể “sống lâu”.
+ * - State “running” dùng atomic để tránh tranh chấp khi kích nhiều lần.
+ * **************************************************************************************** */
+typedef struct
+{
+    void (*entry)(void);       /* Con trỏ vào thân TASK() do ứng dụng định nghĩa */
+    pthread_t       thread;    /* Thread POSIX đại diện cho Task */
+    pthread_mutex_t mtx;       /* Mutex bảo vệ event mask */
+    pthread_cond_t  cv;        /* Condition variable để WaitEvent thức dậy */
+    EventMaskType   events;    /* Bitmask Event đang được set */
+    atomic_int      running;   /* 0 = chưa chạy / đã kết thúc ; 1 = đang chạy */
+    const char*     name;      /* Tên để in log (không bắt buộc) */
+} OsTaskCtl;
+
+/* --- Trampoline gọi trước/sau thân TASK để bám hook AUTOSAR --- */
+static void* OS_TaskTrampoline(void* arg)
+{
+    OsTaskCtl* tc = (OsTaskCtl*)arg;
+
+    atomic_store(&tc->running, 1); /* đánh dấu “đang chạy” */
+    PreTaskHook();                 /* Hook OS (tuỳ app định nghĩa) */
+    tc->entry();                   /* Chạy thân TASK() do app viết */
+    PostTaskHook();                /* Hook OS (tuỳ app định nghĩa) */
+    atomic_store(&tc->running, 0); /* đánh dấu “đã kết thúc” */
+
+    return NULL;
+}
+
+/* --- Bảng ánh xạ ID → entry function (do Os_Cfg.h công bố ID) --- */
+static OsTaskCtl s_task[TASK_COUNT] =
+{
+    [InitTask_ID]   = { .entry = InitTask,   .name = "InitTask"   },
+    [Task_10ms_ID]  = { .entry = Task_10ms,  .name = "Task_10ms"  },
+    [Task_100ms_ID] = { .entry = Task_100ms, .name = "Task_100ms" },
+    [Task_Com_ID]   = { .entry = Task_Com,   .name = "Task_Com"   },
+};
+
+/* ****************************************************************************************
+ * QUẢN LÝ ALARM (mức ms)
+ * - Mỗi Alarm là một thread ngủ: delay “start_ms” rồi lặp “cycle_ms”.
+ * - Tới hạn sẽ ActivateTask() task tương ứng với alarm đó.
+ * - Đây là mô phỏng thay thế Counter/Alarm thực trong OS embedded.
+ * **************************************************************************************** */
+typedef struct
+{
+    uint8_t   id;         /* Alarm ID (theo Os_Cfg.h) */
+    TickType  start_ms;   /* Trễ khởi động (ms) */
+    TickType  cycle_ms;   /* Chu kỳ (ms); 0 = one-shot */
+    pthread_t thread;     /* Thread POSIX đại diện cho Alarm */
+    atomic_int active;    /* 1 = đang hoạt động; 0 = dừng */
+} OsAlarmCtl;
+
+static OsAlarmCtl s_alarm[ALARM_COUNT] =
+{
+    [Alarm_10ms]  = { .id = Alarm_10ms  },
+    [Alarm_100ms] = { .id = Alarm_100ms },
+};
+
+/* ****************************************************************************************
+ * API: TASK
+ * **************************************************************************************** */
+
+/**
+ * @brief  Kích hoạt một Task (ActivateTask)
+ * @param  t  Task ID (InitTask_ID, Task_10ms_ID, ...)
+ * @return E_OK nếu tạo được thread; E_OS_ID/E_OS_STATE/E_OS_LIMIT nếu lỗi.
+ *
+ * Hành vi mô phỏng:
+ *  - Nếu task chưa chạy (running==0): tạo pthread và chạy OS_TaskTrampoline().
+ *  - Nếu task đang chạy (running==1): trả E_OS_LIMIT (bản tối giản).
+ */
+StatusType ActivateTask(TaskType t)
+{
+    if (t >= TASK_COUNT)
+    {
+        return E_OS_ID;
+    }
+
+    OsTaskCtl* tc = &s_task[t];
+
+    /* Chỉ tạo thread khi task chưa chạy */
+    if (!atomic_load(&tc->running))
+    {
+        /* Khởi tạo sync primitives mỗi lần (đơn giản hoá mô phỏng) */
+        (void)pthread_mutex_init(&tc->mtx, NULL);
+        (void)pthread_cond_init(&tc->cv, NULL);
+        tc->events = 0;
+
+        const int rc = pthread_create(&tc->thread, NULL, OS_TaskTrampoline, tc);
+        if (rc != 0)
+        {
+            perror("[OS] pthread_create (task)");
+            return E_OS_STATE;
+        }
+
+        /* Không join tại đây: để thread tự kết thúc */
+        return E_OK;
+    }
+
+    /* Task đang chạy → trong shim coi là “limit” (không queue thêm instance) */
+    return E_OS_LIMIT;
+}
+
+/**
+ * @brief  Kết thúc Task đang chạy (TerminateTask)
+ * @return E_OK (không lỗi)
+ *
+ * Hành vi mô phỏng:
+ *  - Gọi pthread_exit(NULL) để kết thúc thread hiện tại.
+ *  - Ứng dụng KHÔNG được gọi TerminateTask bên ngoài thân task.
+ */
+StatusType TerminateTask(void)
+{
+    pthread_exit(NULL); /* không quay lại */
+    return E_OK;        /* unreachable nhưng giữ prototype AUTOSAR */
+}
+
+/* ****************************************************************************************
+ * API: EVENT cho Extended Task (ví dụ Task_Com)
+ * **************************************************************************************** */
+
+/**
+ * @brief  Task chờ trên một tập event (OR mask)
+ * @param  m  Mặt nạ event mong đợi (ví dụ EV_RX|EV_TX)
+ * @return E_OK
+ *
+ * Lưu ý:
+ *  - Bản mô phỏng chỉ hỗ trợ một task “đợi” kiểu này (Task_Com).
+ *  - Dùng condvar để ngủ, cond_broadcast khi có SetEvent().
+ */
+StatusType WaitEvent(EventMaskType m)
+{
+    /* Giả định chỉ Task_Com sử dụng WaitEvent */
+    OsTaskCtl* const tc = &s_task[Task_Com_ID];
+
+    (void)pthread_mutex_lock(&tc->mtx);
+    while ((tc->events & m) == 0u)
+    {
+        (void)pthread_cond_wait(&tc->cv, &tc->mtx);
+    }
+    (void)pthread_mutex_unlock(&tc->mtx);
+
+    return E_OK;
+}
+
+/**
+ * @brief  Set event cho một Task (thường là Task_Com)
+ * @param  t  Task ID nhận sự kiện
+ * @param  m  Mặt nạ event cần set
+ * @return E_OK hoặc E_OS_ID
+ */
+StatusType SetEvent(TaskType t, EventMaskType m)
+{
+    if (t >= TASK_COUNT)
+    {
+        return E_OS_ID;
+    }
+
+    OsTaskCtl* const tc = &s_task[t];
+
+    (void)pthread_mutex_lock(&tc->mtx);
+    tc->events |= m;                 /* set bit */
+    (void)pthread_cond_broadcast(&tc->cv); /* đánh thức task đang WaitEvent */
+    (void)pthread_mutex_unlock(&tc->mtx);
+
+    return E_OK;
+}
+
+/**
+ * @brief  Lấy mặt nạ event hiện tại của một Task
+ * @param  t  Task ID
+ * @param  m  Out: mặt nạ event
+ * @return E_OK / E_OS_ID
+ */
+StatusType GetEvent(TaskType t, EventMaskType* m)
+{
+    if ((t >= TASK_COUNT) || (m == NULL))
+    {
+        return E_OS_ID;
+    }
+
+    OsTaskCtl* const tc = &s_task[t];
+
+    (void)pthread_mutex_lock(&tc->mtx);
+    *m = tc->events;
+    (void)pthread_mutex_unlock(&tc->mtx);
+
+    return E_OK;
+}
+
+/**
+ * @brief  Xoá (clear) các bit event đã xử lý — gọi từ task đang chạy
+ * @param  m  Mặt nạ event cần clear
+ * @return E_OK
+ */
+StatusType ClearEvent(EventMaskType m)
+{
+    /* Giả định gọi từ Task_Com trong mô phỏng */
+    OsTaskCtl* const tc = &s_task[Task_Com_ID];
+
+    (void)pthread_mutex_lock(&tc->mtx);
+    tc->events &= (EventMaskType)(~m);
+    (void)pthread_mutex_unlock(&tc->mtx);
+
+    return E_OK;
+}
+
+/* ****************************************************************************************
+ * API: ALARM (đơn vị mili-giây)
+ * **************************************************************************************** */
+
+/* Thread thực thi 1 Alarm */
+static void* OS_AlarmThread(void* arg)
+{
+    OsAlarmCtl* const a = (OsAlarmCtl*)arg;
+    atomic_store(&a->active, 1);
+
+    /* Trễ khởi động một lần (nếu có) */
+    if (a->start_ms > 0u)
+    {
+        OS_SleepMs(a->start_ms);
+    }
+
+    /* Vòng kích hoạt chu kỳ */
+    while (atomic_load(&a->active))
+    {
+        /* Ánh xạ alarm → task chu kỳ tương ứng */
+        switch (a->id)
+        {
+            case Alarm_10ms:
+                (void)ActivateTask(Task_10ms_ID);
+                break;
+            case Alarm_100ms:
+                (void)ActivateTask(Task_100ms_ID);
+                break;
+            default:
+                /* Không hỗ trợ alarm khác trong bản tối giản */
+                break;
+        }
+
+        /* One-shot: thoát vòng nếu cycle_ms == 0 */
+        if (a->cycle_ms == 0u)
+        {
+            break;
+        }
+
+        OS_SleepMs(a->cycle_ms);
+    }
+
+    atomic_store(&a->active, 0);
+    return NULL;
+}
+
+/**
+ * @brief  Đặt alarm tương đối
+ * @param  alarmId   ID của alarm (Alarm_10ms / Alarm_100ms)
+ * @param  start_ms  Trễ khởi động (ms)
+ * @param  cycle_ms  Chu kỳ (ms); 0 = one-shot
+ * @return E_OK / E_OS_ID / E_OS_STATE
+ */
+StatusType SetRelAlarm(uint8_t alarmId, TickType start_ms, TickType cycle_ms)
+{
+    if (alarmId >= ALARM_COUNT)
+    {
+        return E_OS_ID;
+    }
+
+    OsAlarmCtl* const a = &s_alarm[alarmId];
+    a->start_ms = start_ms;
+    a->cycle_ms = cycle_ms;
+
+    const int rc = pthread_create(&a->thread, NULL, OS_AlarmThread, a);
+    if (rc != 0)
+    {
+        perror("[OS] pthread_create (alarm)");
+        return E_OS_STATE;
+    }
+
+    /* Cho phép thread tự thu dọn khi kết thúc (không cần join) */
+    (void)pthread_detach(a->thread);
+
+    return E_OK;
+}
+
+/* ****************************************************************************************
+ * LIFECYCLE OS
+ * **************************************************************************************** */
+
+/**
+ * @brief  Khởi động OS (StartOS)
+ * @param  appMode  Chế độ ứng dụng (không dùng trong mô phỏng)
+ * @return E_OK (không bao giờ trả về trong mô phỏng)
+ *
+ * Hành vi:
+ *  - Reset trạng thái Task/Alarm;
+ *  - Gọi StartupHook();
+ *  - Autostart InitTask (ActivateTask(InitTask_ID));
+ *  - Giữ tiến trình sống bằng vòng sleep vô hạn.
+ */
+StatusType StartOS(uint8_t appMode)
+{
+    (void)appMode;
+
+    /* Reset trạng thái các Task */
+    for (int i = 0; i < TASK_COUNT; ++i)
+    {
+        s_task[i].thread = (pthread_t)0;
+        s_task[i].events = 0u;
+        (void)atomic_exchange(&s_task[i].running, 0);
+        /* Mutex/cond sẽ được init lại khi ActivateTask */
+    }
+
+    /* Reset trạng thái các Alarm */
+    for (int i = 0; i < ALARM_COUNT; ++i)
+    {
+        s_alarm[i].thread   = (pthread_t)0;
+        s_alarm[i].start_ms = 0u;
+        s_alarm[i].cycle_ms = 0u;
+        (void)atomic_exchange(&s_alarm[i].active, 0);
+    }
+
+    /* Hook khởi động (app có thể in log) */
+    StartupHook();
+
+    /* Autostart: InitTask */
+    (void)ActivateTask(InitTask_ID);
+
+    /* Vòng “idle” giữ process sống trong mô phỏng */
+    for (;;)
+    {
+        sleep(1);
+    }
+
+    /* Unreachable trong mô phỏng */
+    /* return E_OK; */
+}
+
+/**
+ * @brief  Tắt OS (ShutdownOS)
+ * @param  e  Mã lỗi/thoát (không dùng)
+ */
+void ShutdownOS(StatusType e)
+{
+    (void)e;
+    ShutdownHook(e);
+    _exit(0);  /* kết thúc tiến trình mô phỏng */
+}
+
+/* ****************************************************************************************
+ * HOOKS MẶC ĐỊNH (weak) — Ứng dụng có thể định nghĩa lại trong app/hooks/Os_Hook.c
+ * **************************************************************************************** */
+__attribute__((weak)) void StartupHook(void)                  { /* no-op */ }
+__attribute__((weak)) void ShutdownHook(StatusType error)     { (void)error; }
+__attribute__((weak)) void PreTaskHook(void)                  { /* no-op */ }
+__attribute__((weak)) void PostTaskHook(void)                 { /* no-op */ }

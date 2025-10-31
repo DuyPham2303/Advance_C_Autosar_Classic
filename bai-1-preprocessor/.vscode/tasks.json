@@ -1,0 +1,37 @@
+{
+    "tasks": [
+        {
+            "type": "cppbuild",                         // Loại tác vụ: biên dịch chương trình C/C++
+            "label": "Build-C-program",                 // Tên hiển thị của task (hiện trong menu Run Task)
+            "command": "C:/MinGW/msys64/mingw64/bin/gcc.exe", 
+            // Đường dẫn đầy đủ đến trình biên dịch GCC dùng để biên dịch mã nguồn
+            "args": [                                  // Danh sách các tham số truyền cho GCC
+                "-fdiagnostics-color=always",          // Hiển thị thông báo lỗi/cảnh báo có màu trong terminal
+                "-g",                                  // Thêm thông tin debug (giúp chạy và gỡ lỗi trong debugger)
+                "-Wextra",                             // Bật thêm các cảnh báo mở rộng
+                "-Werror",                             // Biến mọi cảnh báo thành lỗi biên dịch (bắt buộc sửa)
+                "-Wconversion",                        // Cảnh báo khi có ép kiểu ngầm có thể gây mất dữ liệu
+                "-Wformat",                            // Kiểm tra lỗi định dạng (printf/scanf)
+                "-Wunused-result",                     // Cảnh báo khi kết quả hàm bị bỏ qua (ví dụ: fgets, scanf)
+                "-std=c17",                            // Chuẩn ngôn ngữ C được sử dụng (C17)
+                "${file}",                             // File hiện tại đang mở trong VSCode (sẽ được biên dịch)
+                "-o",                                  // Chỉ định tên file đầu ra
+                "${fileDirname}\\${fileBasenameNoExtension}.exe"
+                // Tên file đầu ra cùng thư mục với file gốc, đổi phần mở rộng thành .exe
+            ],
+            "options": {
+                "cwd": "${fileDirname}"                // Thư mục làm việc hiện tại (Current Working Directory)
+            },
+            "problemMatcher": [
+                "$gcc"                                 // Dùng bộ nhận diện lỗi mặc định của GCC để VSCode hiển thị lỗi
+            ],
+            "group": {
+                "kind": "build",                       // Nhóm task thuộc loại "build" (xây dựng / biên dịch)
+                "isDefault": true                      // Đặt đây là tác vụ build mặc định (Ctrl+Shift+B)
+            },
+            "detail": "C:\\MinGW\\msys64\\mingw64\\bin\\gcc.exe"
+            // Dòng mô tả chi tiết (VS Code sẽ hiện ở dưới thanh trạng thái khi chạy)
+        }
+    ],
+    "version": "2.0.0"                                 // Phiên bản cấu hình tasks.json 
+}

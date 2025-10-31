@@ -1,0 +1,11 @@
+{
+    "files.associations": {
+        "search.h": "c",
+        "enginecontrol_swc.h": "c",
+        "std_types.h": "c",
+        "diagnostic_swc.h": "c",
+        "task.h": "c",
+        "compare": "c",
+        "type_traits": "c"
+    }
+}

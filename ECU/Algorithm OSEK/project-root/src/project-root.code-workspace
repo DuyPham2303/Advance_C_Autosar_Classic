@@ -1,0 +1,19 @@
+{
+	"folders": [
+		{
+			"path": ".."
+		},
+		{
+			"path": "../../Crypto_driver_wolf/wolfssl"
+		}
+	],
+	"settings": {
+		"files.associations": {
+			"types.h": "c",
+			"settings.h": "c",
+			"error-crypt.h": "c",
+			"wc_port.h": "c",
+			"memory.h": "c"
+		}
+	}
+}

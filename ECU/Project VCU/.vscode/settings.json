@@ -1,0 +1,31 @@
+{
+    "files.associations": {
+        "cstdint": "c",
+        "charconv": "c",
+        "optional": "c",
+        "format": "c",
+        "system_error": "c",
+        "array": "c",
+        "functional": "c",
+        "tuple": "c",
+        "type_traits": "c",
+        "utility": "c",
+        "variant": "c",
+        "cstddef": "c",
+        "random": "c",
+        "string.h": "c",
+        "cstdlib": "c",
+        "memory_resource": "c",
+        "memory": "c",
+        "test1.h": "c",
+        "stdio.h": "c",
+        "read.h": "c",
+        "search.h": "c",
+        "bit": "c",
+        "unordered_map": "c",
+        "algorithm": "c",
+        "limits": "c",
+        "streambuf": "c",
+        "std_types.h": "c"
+    }
+}

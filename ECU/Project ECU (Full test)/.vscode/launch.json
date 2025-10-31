@@ -1,0 +1,20 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Debug STM32F103 (OpenOCD)",
+            "type": "cortex-debug",
+            "request": "launch",
+            "servertype": "openocd",
+            "cwd": "${workspaceRoot}/AUTOSAR-Classic-ECU-Development/1. DIO Driver",
+            "executable": "${workspaceRoot}/AUTOSAR-Classic-ECU-Development/1. DIO Driver/Tools/blinkled.elf",
+            "device": "STM32F103C8T6",
+            "configFiles": [
+                "interface/stlink.cfg",
+                "target/stm32f1x.cfg"
+            ],
+            "runToEntryPoint": "main",
+            "svdFile": "${workspaceRoot}/AUTOSAR-Classic-ECU-Development/1. DIO Driver/SPL/STM32F103.svd"
+        }
+    ]
+}

@@ -1,0 +1,40 @@
+// ============================================================
+  //  FILE: launch.json
+  //  PURPOSE: Cấu hình cách VSCode chạy (launch) và debug chương trình C/C++
+  //  MỐI LIÊN KẾT: Kết hợp với "tasks.json" thông qua "preLaunchTask"
+  // ============================================================
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug with GDB", //tên hiển thị trong VSCode (Lựa chọn trong menu Run & debug)
+      "type": "cppdbg",         //trình debug cho C/C++
+      "request": "launch",      //kiểu chạy
+      
+      //đường dẫn chương trình
+      "program": "${fileDirname}\\${fileBasenameNoExtension}.exe",
+      /* 
+        - ${fileDirname}              → thư mục chứa file .c đang mở
+        - ${fileBasenameNoExtension}  → tên file không có đuôi (.exe)
+        => Ví dụ: nếu đang mở "main.c", VSCode sẽ chạy "main.exe"
+      */
+
+      //Tham số chương trình (mặc định trống) 
+      "args": [""],
+      "stopAtEntry": true,          //đặt breakpoint ở đầu chương trình
+      "cwd":  "${workspaceFolder}", //thư mục gốc của project
+      "preLaunchTask": "Build-C-program",   //liên kết tới task đã build trước khi debug
+      "externalConsole": false,
+      "MIMode": "gdb",  //giao thức debug
+      "miDebuggerPath": "C:\\MinGW\\msys64\\mingw64\\bin\\gdb.exe",
+      //Lệnh khởi tạo GDB
+      "setupCommands": [
+        {
+          "description": "Enable pretty-printing",
+          "text": "-enable-pretty-printing",
+          "ignoreFailures": true
+        }
+      ]
+    }
+  ]
+}
