@@ -1,7 +1,7 @@
-# 0 "mcu.c"
+# 0 "concate.c"
 # 0 "<built-in>"
 # 0 "<command-line>"
-# 1 "mcu.c"
+# 1 "concate.c"
 # 1 "C:/mingw-w64/mingw32/i686-w64-mingw32/include/stdio.h" 1 3
 # 9 "C:/mingw-w64/mingw32/i686-w64-mingw32/include/stdio.h" 3
 # 1 "C:/mingw-w64/mingw32/i686-w64-mingw32/include/corecrt_stdio_config.h" 1 3
@@ -1544,12 +1544,24 @@ void __attribute__((__cdecl__)) __mingw_str_free(void *ptr);
 # 912 "C:/mingw-w64/mingw32/i686-w64-mingw32/include/sec_api/stdio_s.h" 3
   __attribute__ ((__dllimport__)) size_t __attribute__((__cdecl__)) _fread_nolock_s(void *_DstBuf,size_t _DstSize,size_t _ElementSize,size_t _Count,FILE *_File);
 # 1605 "C:/mingw-w64/mingw32/i686-w64-mingw32/include/stdio.h" 2 3
-# 2 "mcu.c" 2
-# 39 "mcu.c"
+# 2 "concate.c" 2
 
-# 39 "mcu.c"
+
+
+
+# 5 "concate.c"
 int main()
 {
-    gpio_init();
+
+    int var1;
+    int var2;
+
+
+    var1 = 10;
+    var2 = 20;
+
+
+    printf("var1: %d\n", var1);
+    printf("var2: %d\n", var2);
     return 0;
 }

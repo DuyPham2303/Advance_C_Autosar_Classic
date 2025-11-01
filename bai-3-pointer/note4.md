@@ -1,20 +1,34 @@
 # BASIC POINTER
    **Khái niệm** 
-        + ý nghĩa, thao tác, 
-        + Biến thường vs pointer (minh họa trên memory)
+        + ý nghĩa : biến đặc biệt, lưu địa chỉ của 1 đối tượng (hàm,biến,cấu trúc)
+        + thao tác 
+            - pointer operators : & và *
+            - pointer arithmetic : phép toán tăng/giảm địa chỉ 
+        + Địa chỉ của biến tổ chức trên bộ nhớ ?
+            - Bộ nhớ lưu giá trị dưới dạng nào ?
+            - ý nghĩa của byte đầu - cuối -> MSB - LSB
+            - So sánh với cấp phát byte và địa chỉ lưu trữ trên pointer
+        => vị trí các byte của biến/con trỏ lưu ở địa chỉ thấp/cao phụ thuộc ai ?
    **Bản chất**
-        + endian ?
-        + kích thước ?  
-        + kiểu dữ liệu ?  
-        + ứng dụng endian ? 
-   **tách byte** 
-        + tách byte từ 1 số nguyên lưu vào các biến có kiểu nhỏ hơn
-        + ứng dụng ? 
+        + endian là gì ? ứng dụng ?
+        + kích thước và kiểu dữ liệu con trỏ ?  
+    **Ví dụ ứng dụng**
+        + triển khai swap 2 giá trị 
+        + so sánh truyền 
+            - con trỏ : khi cần thay đổi
+                ví dụ : hàm input -> xử lý scanf
+            - giá trị : chỉ kiểm tra 
+                ví dụ : hàm chứa if else để check value
    **pointer to array**
-        + mối quan hệ ?
-        + pointer operator ? (cộng/trừ address)
-        + Liên hệ embedded system (shortage memory -> optimization required)
-    => Tóm tắt bải học
+        + `thao tác ? : `
+            - cấp phát các vùng địa chỉ liền kề cho các phần tử
+        + `pointer arithmetic ? `
+            - con trỏ dịch chuyển đến vùng nhớ với bước nhảy (số byte bỏ qua) bằng kích thước kiểu dữ liệu mà nó trỏ tới
+    => Tóm tắt bài học 
+        + định nghĩa : cú pháp ? dereference ? 
+        + cách thức phân bố địa chỉ ?
+        + endian ?
+        + kích thước ? kiểu dữ liệu ? 
 # POINTER VARIATION
 `Void Pointer`
     **Bối cảnh:**

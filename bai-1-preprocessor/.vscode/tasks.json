@@ -14,7 +14,9 @@
                 "-Wformat",                            // Kiểm tra lỗi định dạng (printf/scanf)
                 "-Wunused-result",                     // Cảnh báo khi kết quả hàm bị bỏ qua (ví dụ: fgets, scanf)
                 "-std=c17",                            // Chuẩn ngôn ngữ C được sử dụng (C17)
-                "${file}",                             // File hiện tại đang mở trong VSCode (sẽ được biên dịch)
+                //"${file}",                             // File hiện tại đang mở trong VSCode (sẽ được biên dịch)
+                "main.c",
+                "ex.c",
                 "-o",                                  // Chỉ định tên file đầu ra
                 "${fileDirname}\\${fileBasenameNoExtension}.exe"
                 // Tên file đầu ra cùng thư mục với file gốc, đổi phần mở rộng thành .exe

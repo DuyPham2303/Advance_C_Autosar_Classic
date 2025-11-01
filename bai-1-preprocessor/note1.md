@@ -19,10 +19,9 @@
             + thay thế các macro được định nghĩa với #define
             + xóa các comment
             + xử lý các chỉ thị biên dịch có điều kiện, bằng cách đánh giá giá trị của các macro liên quan
-   ## TRIỂN KHAI CHI TIẾT 
-        
+   ## CHỈ THỊ TIỀN XỬ LÝ
    ` #include` 
-        - 
+        - bao hàm tệp 
    ` #define và #undef `
         **macro** : là một loại chỉ thị tiền xử lý, được định nghĩa bằng #define, trước khi chương trình biên dịch
         **#define** : chỉ thị thay thế, được dùng để thay thế 1 đoạn văn bản hoặc chuỗi ký tự hoặc biểu thức bằng 1 đoạn văn bản khác để dại diện cho ý nghĩa cụ thể của chúng
@@ -88,10 +87,23 @@ Liên kết nhiều tệp mã máy lại để tạo ra tệp thực thi mà ch�
 ### giới thiệu macro mở rộng
 - macro nối chuỗi : ứng dụng tạo ra 1 tên biến bằng cách ghép các đoạn văn bãn
 - macro chuẩn hóa chuỗi : chuyển đổi text -> chuỗi
-- macro variadic : ví dụ dẫn dắt giả sử 
+- macro variadic : 
+    `ví dụ dẫn dắt giả sử `
     #define sum(a,b,c) a+b+c 
     -> chỉ khả thi nếu input xác định trước 
     -> cần cách tổng quát để xử lý  
-=> Ví dụ áp dụng thực tế 
+    `Triển khai hàm sum`
+    -> mô tả ... và __VA_ARGS__
+    -> Trình bày từng bước hàm sum : 2 cách 
+    `Ví dụ áp dụng thực tế`
+    - **Xây dựng giao diện** : trong các hệ thống tuong tác người dùng, hoặc màn hình hiển thị trên ô tô, được triển khai bằng cách 
+     - printf để hiển thị các tính nằng
+     - switch case để thực thi tính năng 
+    Tuy nhiên trong lập trình có 1 số nguyên tác cần phải tuân theo để đảm bảo tính 
+        - tái sử dụng 
+        - dể dàng mở rộng chức năng
+    Có nghĩa là đoạn mã nguồn gốc sẽ cần phải đóng gói lại thành 1 hàm để khi cần sử dụng chỉ cần gọi hàm đó. Tuy nhiên khi cần thay đổi mở rộng chức năng lại cần phải can thiệp vào mã nguồn gốc dẫn đến
+        - không tối ưu, linh hoạt, do can thiệp vào mã nguồn gốc để chỉnh sửa -> có nguy cơ gây lỗi (trong hệ thống thực tế -> mã nguồn phức tạp -> tránh việc sửa trực tiếp vì dễ gây lỗi dây chuyền nếu ko cẩn thận và sửa đúng phần cần thiết)
+    => Do vậy trên mã gốc thay vì gọi printf, switch case thủ công nhiều lần -> ta sẽ thiết kế lại thành các hàm xử lý tổng quát để tự động xử lý, mỗi khi ta thêm 1 tính năng mới thông qua 1 hàm trừu tượng -> tránh truy cập vào mã nguồn gốc để sửa code trực tiếp
 ### GDB 
 - Ví dụ debug nhiều loại lỗi > debug bằng GDB

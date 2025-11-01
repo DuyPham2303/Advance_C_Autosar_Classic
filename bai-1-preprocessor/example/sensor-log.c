@@ -1,9 +1,9 @@
 #include <stdio.h>
 #include <stdint.h>
 
-// Macro LOG với __VA_ARGS__ => in log, thêm tên file, dòng, và module.
-#define LOG(fmt, ...)  \
-    printf("[LOG][%s:%d] " fmt "\n", __FILE__, __LINE__, ##__VA_ARGS__)
+// Macro LOG với __VA_ARGS__ => in log, thêm tên file, dòng.
+#define LOG(fmt)  \
+    printf("[LOG][%s:%d] %s\n", __FILE__, __LINE__,fmt)
 
 // Macro nối chuỗi ## => Tự động sinh tên biến thanh ghi / sensor
 #define SENSOR_REG(name)   SENSOR_##name##_REG
@@ -29,11 +29,15 @@ uint16_t read_sensor(uint32_t addr) {
 }
 
 void app_sensor_read() {
+    //gán địa chỉ thanh ghi tự động -> đọc ra giá trị 
     uint16_t temp = read_sensor(SENSOR_REG(TEMP));
     uint16_t pressure = read_sensor(SENSOR_REG(PRESSURE));
     uint16_t humid = read_sensor(SENSOR_REG(HUMID));
 
+    //tự động in ra các thông tin về file, dòng
     LOG("Reading sensors...");
+
+    //tự động in tên biến + giá trị
     SHOW_VAR(temp);
     SHOW_VAR(pressure);
     SHOW_VAR(humid);
