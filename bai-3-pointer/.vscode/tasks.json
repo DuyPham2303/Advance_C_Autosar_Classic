@@ -7,9 +7,9 @@
             "args": [
                 "-fdiagnostics-color=always",
                 "-g",
-                "-Wall",
-                "-Warray-bounds",
-                "-Werror",
+                //"-Wall",
+                //"-Warray-bounds",
+                //"-Werror",
                  "-Wextra",
                 "-std=c17",
                 "${file}",

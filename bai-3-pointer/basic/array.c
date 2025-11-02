@@ -1,14 +1,24 @@
 #include <stdio.h>
 
-
+/* 
+    - định nghĩa , cú pháp * & 
+    - cách thức phân bố địa chỉ 
+    - endian -> thứ tự lưu trữ byte của dữ liệu (big endian - little endian)
+    - kích thước phụ thuộc 
+        + kiến trúc hệ điều hành và compiler (PC)
+        + kiến trúc bộ vi xử lý  (Vi điều khiển)
+    - kiểu dữ liệu quyết định số byte mà nó truy xuất (đọc) trong 1 lần
+*/
 int main(){
     int arr[] = {0,1,2,3}; 
-    //0 : 0x00 0x01 0x02 0x03
-    
+
+    //0 : 0x01,0x02,0x03,0x04
+    //1 : 0x05
+    //2 : 
 
     int size = sizeof(arr) / sizeof(arr[0]);
 
-    int* ptr = arr; //hoặc &arr
+    int* ptr = arr; //&arr 
 
     //duyệt mảng bằng chỉ số
 

@@ -1,17 +1,14 @@
 # BASIC POINTER
    **Khái niệm** 
-        + ý nghĩa : biến đặc biệt, lưu địa chỉ của 1 đối tượng (hàm,biến,cấu trúc)
-        + thao tác 
-            - pointer operators : & và *
-            - pointer arithmetic : phép toán tăng/giảm địa chỉ 
+        + ý nghĩa ? thao tác ? ưu điểm ?
         + Địa chỉ của biến tổ chức trên bộ nhớ ?
             - Bộ nhớ lưu giá trị dưới dạng nào ?
             - ý nghĩa của byte đầu - cuối -> MSB - LSB
             - So sánh với cấp phát byte và địa chỉ lưu trữ trên pointer
-        => vị trí các byte của biến/con trỏ lưu ở địa chỉ thấp/cao phụ thuộc ai ?
+        => vị trí các byte của biến/con trỏ lưu ở địa chỉ thấp/cao phụ thuộc ai ? -> dẫn dắt sang endian
    **Bản chất**
-        + endian là gì ? ứng dụng ?
-        + kích thước và kiểu dữ liệu con trỏ ?  
+        + `endian ?` 
+        + `Size & datatype ?`
     **Ví dụ ứng dụng**
         + triển khai swap 2 giá trị 
         + so sánh truyền 
@@ -34,9 +31,9 @@
     **Bối cảnh:**
     + cần truy thao tác trên các biến có datatype khác nhau 
     -> khai báo bấy nhiêu con trỏ có datatype tương ứng 
-    -> tốn memory  
-    -> solution tối ưu hơn ? 
-    => 1 con trỏ duy nhất trỏ tớ bất kỳ datatype nào 
+    -> tốn memory => `solution tối ưu hơn ?` 
+    __1 con trỏ duy nhất trỏ tớ bất kỳ datatype nào__
+   
    **Triển khai:**
     + `Ví dụ:` *(datatype*)ptr : ép kiểu con trỏ để biết cần truy xuất bao nhiêu byte 
     + `demo: ` trỏ tới int,double,char,mảng ký tự (lưu ý ký tự null -> kết thúc  1 mảng ký tự)
@@ -59,7 +56,7 @@
             - mảng con trỏ hàm chứa địa chỉ các hàm
             - hàm xử lý tổng quát thông qua truyền địa chỉ của hàm như 1 tham số 
     **Ứng dụng**
-    + Trong embebedded , ứng dụng xử lý ngắt bằng cách gọi ra hàm xử lý tương ứng 
+    + Trong embebedded , ứng dụng xử lý ngắt bằng cách gọi ra hàm xử lý tương ứng dựa trên địa chỉ của ISR trong vector table
 `Pointer to const`
      **Bối cảnh:**
      + Thao tác kiểm tra trên vùng dữ liệu mà không muốn thay đổi 

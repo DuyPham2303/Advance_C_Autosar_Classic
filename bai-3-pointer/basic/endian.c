@@ -2,7 +2,6 @@
 
 int main()
 {
-    //Endianness
     unsigned int x = 0x12345678;
     unsigned char*c = (unsigned char*)&x;
 
@@ -12,7 +11,7 @@ int main()
     }
     else
     {
-        printf("Big Endian\n");
+        printf("Big Endian\n"); //networking
     } 
     return 0;
 }
