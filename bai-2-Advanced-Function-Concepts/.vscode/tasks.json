@@ -7,10 +7,9 @@
             "args": [
                 "-fdiagnostics-color=always",
                 "-g",
-                //"-Wextra",
+                "-Wextra",
                 "-std=c17",
                 "${file}",
-                //"*.c",
                 "-o",
                 "${fileDirname}\\${fileBasenameNoExtension}.exe"
             ],

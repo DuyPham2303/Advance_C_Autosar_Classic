@@ -9,7 +9,24 @@
         + kiến trúc bộ vi xử lý  (Vi điều khiển)
     - kiểu dữ liệu quyết định số byte mà nó truy xuất (đọc) trong 1 lần
 */
+#include <stdio.h>
+
+void print_array(int *p, int size) {
+    for (int i = 0; i < size; i++)
+        printf("%d ", *(p + i));
+}
 int main(){
+    int data[3] = {10, 20, 30};
+
+
+    //gây lỗi, vì tham số truyền vào cần địa chỉ chứ ko phải con trõ
+    // int *ptr = data;    
+    // print_array(ptr, 3);   
+
+    //cách truyền địa chỉ của hàm chính xác
+    print_array(data,3); //truyền tên hàm cũng là địa chỉ 
+
+    return 0;
     int arr[] = {0,1,2,3}; 
 
     //0 : 0x01,0x02,0x03,0x04

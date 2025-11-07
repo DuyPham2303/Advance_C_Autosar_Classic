@@ -27,23 +27,23 @@ int main()
 {
     int a = 12, b = 2;
     /* cach 1 */
-    // void (*func_ptr)(int,int) = NULL;
-    // func_ptr = Tong;
-    // func_ptr(a,b);
+    void (*func_ptr)(int,int) = NULL;
+    func_ptr = Tong;
+    func_ptr(a,b);
 
-    // func_ptr = Hieu;
-    // func_ptr(a,b);
+    func_ptr = Hieu;
+    func_ptr(a,b);
 
-    // func_ptr = Tich;
-    // func_ptr(a,b);
+    func_ptr = Tich;
+    func_ptr(a,b);
 
-    // func_ptr = Hieu;
-    // func_ptr(a,b);
+    func_ptr = Hieu;
+    func_ptr(a,b);
     /* cach 2 */
-    // Operator(Tong, a, b);
-    // Operator(Hieu, a, b);
-    // Operator(Tich, a, b);
-    // Operator(Thuong, a, b);
+    Operator(Tong, a, b);
+    Operator(Hieu, a, b);
+    Operator(Tich, a, b);
+    Operator(Thuong, a, b);
     /* cach 3 */
 
     void (*funcArr[])(int,int) = {Tong,Hieu,Tich,Thuong};

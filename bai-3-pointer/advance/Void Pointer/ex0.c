@@ -9,6 +9,9 @@
     - function pointer
     - pointer to pointer (double pointer)
 */
+/* 
+
+*/
 char* pstr[] = {"hello","world","my name","is Duy"};
 int main()
 {

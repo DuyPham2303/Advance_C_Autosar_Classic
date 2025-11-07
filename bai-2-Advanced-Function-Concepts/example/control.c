@@ -20,12 +20,14 @@ void sendCommand(CommandType command, ...)
         case TURN_OFF:
         {
             int deviceID = va_arg(args, int);
-            printf("Command: %s Device ID: %d\n", command == TURN_ON ? "Turn On" : "Turn Off", deviceID);
+            printf("Command: %s Device ID: %d\n", 
+                command == TURN_ON ? "Turn On" : "Turn Off", 
+                deviceID);
             break;
         }
 
         case SET_LEVEL:
-        {
+       {
             int deviceID = va_arg(args, int);
             int level = va_arg(args, int);
             printf("Set Level of Device ID %d to %d\n", deviceID, level);

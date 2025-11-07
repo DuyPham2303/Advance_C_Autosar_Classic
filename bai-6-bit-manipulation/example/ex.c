@@ -2,16 +2,16 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-#define GENDER 1 << 0 // Bit 0: Giới tính (0 = Nữ, 1 = Nam) // 0b 0000 0001 
-#define TSHIRT 1 << 1 // Bit 1: Áo thun (0 = Không, 1 = Có) // 0b 0000 0010
-#define HAT    1 << 2    // Bit 2: Nón (0 = Không, 1 = Có)  // 0b 0000 0100
-#define SHOES  1 << 3  // Bit 3: Giày (0 = Không, 1 = Có)   // 0b 0000 1000
+#define GENDER 1u << 0 // Bit 0: Giới tính (0 = Nữ, 1 = Nam) // 0b 0000 0001 
+#define TSHIRT 1u << 1 // Bit 1: Áo thun (0 = Không, 1 = Có) // 0b 0000 0010
+#define HAT    1u << 2 // Bit 2: Nón (0 = Không, 1 = Có)  // 0b 0000 0100
+#define SHOES  1u << 3 // Bit 3: Giày (0 = Không, 1 = Có)   // 0b 0000 1000
 
 // Tự thêm 5 tính năng khác
-#define FEATURE1 1 << 4 // Bit 4: Tính năng 1
-#define FEATURE2 1 << 5 // Bit 5: Tính năng 2
-#define FEATURE3 1 << 6 // Bit 6: Tính năng 3
-#define FEATURE4 1 << 7 // Bit 7: Tính năng 4
+#define FEATURE1 1u << 4 // Bit 4: Tính năng 1
+#define FEATURE2 1u << 5 // Bit 5: Tính năng 2
+#define FEATURE3 1u << 6 // Bit 6: Tính năng 3
+#define FEATURE4 1u << 7 // Bit 7: Tính năng 4
 
 void enableFeature(uint8_t *features, uint8_t feature)
 {

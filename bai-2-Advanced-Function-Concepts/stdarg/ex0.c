@@ -19,7 +19,7 @@ int sum(int count,...)
 
 int main()
 {
-    int result = sum(5,12,5,1,3,20);
+    int result = sum(5,1,2,3,4);
     printf("result = %d",result);
     return 0;
 }

@@ -25,7 +25,6 @@
         "unordered_map": "c",
         "algorithm": "c",
         "limits": "c",
-        "streambuf": "c",
-        "stdint.h": "c"
+        "streambuf": "c"
     }
 }
