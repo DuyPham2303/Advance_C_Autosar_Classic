@@ -5,7 +5,7 @@
 
 /* Danh sách ID mà CanIf quan tâm (ở ví dụ chỉ 0x3F0) */
 static const Can_IdType acceptList[] = {
-    0x3F0  /* StopEngine hoặc SetSpeed */
+    0x3F0  
 };
 
 /* Khai báo cấu hình CAN mặc định cho 1 controller */

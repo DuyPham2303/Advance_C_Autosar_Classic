@@ -26,6 +26,7 @@
         "algorithm": "c",
         "limits": "c",
         "streambuf": "c",
-        "stdint.h": "c"
+        "stdint.h": "c",
+        "stdbool.h": "c"
     }
 }

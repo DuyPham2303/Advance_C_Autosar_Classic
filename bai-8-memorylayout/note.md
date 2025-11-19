@@ -42,3 +42,10 @@
 ## c) sửa lại dấu mũi tên đi lên của heap ko phải của stack
 ## d) lý do realloc lại nhưng địa chỉ ban đầu bị thay đổi
     -> địa chỉ liền kề sau vùng nhớ cũ đã được sử dụng nên Os cần phải cấp phát vùng địa chỉ mới có các giá trị địa chỉ liền kề tương ứng với số byte được cấp phát để lưu trữ kích thước mới đã được điều chỉnh
+
+
+
+
+
+
+

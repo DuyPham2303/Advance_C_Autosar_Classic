@@ -2,6 +2,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+
 #define GENDER 1u << 0 // Bit 0: Giới tính (0 = Nữ, 1 = Nam) // 0b 0000 0001 
 #define TSHIRT 1u << 1 // Bit 1: Áo thun (0 = Không, 1 = Có) // 0b 0000 0010
 #define HAT    1u << 2 // Bit 2: Nón (0 = Không, 1 = Có)  // 0b 0000 0100

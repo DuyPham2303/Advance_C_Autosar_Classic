@@ -4,15 +4,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define STACK_EMPTY -1 
-//heap
-//stack
+typedef bool StackStatus;
 
-//mảng
-//kích thước -> size
-//top
+#define STACK_E_OK        ((StackStatus)true)
+#define STACK_E_NOT_OK    ((StackStatus)false)
 
-//cấu trúc ngăn xếp
 typedef struct{
     int* items;
     int size;
@@ -20,25 +16,25 @@ typedef struct{
 }Stack;
 
 //hàm khởi tạo bộ nhớ cho ngăn xếp
-void Init_Stack(Stack* stack,int size);
+StackStatus Init_Stack(Stack* stack,int size);
 
 //hàm kiểm tra stack đầy
-bool Isfull(Stack stack);
+StackStatus Isfull(const Stack* stack);
 
 //hàm kiểm tra stack rỗng
-bool IsEmpty(Stack stack);
+StackStatus IsEmpty(const Stack* stack);
 
 //hàm thêm phần tử vào stack
-void Push(Stack* stack,int data);
+StackStatus Push(Stack* stack,int indata);
 
 //hàm xóa phần tử ở đỉnh stack
-int Pop(Stack* stack);
+StackStatus Pop(Stack* stack,int* outdata);
 
 //đọc / lấy phần tử ở đỉnh stack
-int Top(Stack stack);
+StackStatus Top(const Stack* stack,int *data);
 
 //hàm giải phóng stack
-void FreeStack(Stack* stack);
+StackStatus FreeStack(Stack* stack);
 
 
 #endif

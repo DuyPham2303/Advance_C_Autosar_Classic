@@ -34,15 +34,15 @@ What ?
     - mục tiêu tiết kiệm bộ nhớ
 How ?
     - Compiler quy hoạch vùng nhớ -> chỉ rõ bit nào thuộc về field nào
-    - Bộ nhớ vẫn cấp phát theo minium unit -> CPU có thể access
+    - Bộ nhớ vẫn cấp phát theo minium unit -> CPU có thể access (1 byte - 4 byte)
     - Compiler đặt các field nào vị trí bit cụ thể
     - các bit thừa chỉ bị bỏ trống (ko bị xóa)
     - CPU khi đọc/ghi
         -> thao tác nguyên byte/word
-        -> áp dụng mask (AD/OR/SHIFT) lấy đúng phần bit field tương ứng
+        -> áp dụng mask (AND/OR/SHIFT) lấy đúng phần bit field tương ứng
     - Ví dụ
         struct {
-            a : 1;
+            a : 3;
             b : 2;
             c : 1;
         }field;

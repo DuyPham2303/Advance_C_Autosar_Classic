@@ -57,6 +57,6 @@ int main() {
     screenlst.list_screen = NULL;
     eventlst.list_event = NULL;
 
-    printf("🚗 UI system terminated.\n");
+    printf("UI system terminated.\n");
     return 0;
 }

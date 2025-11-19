@@ -7,8 +7,9 @@
 + ĐẶC ĐIỂM của Struct 
     - data alignment : 
         what ? 
-            - yêu cầu căn chỉnh của hệ thống (cpu).
-            đảm bảo CPU có thể truy cập data nhanh nhất 
+            - yêu cầu căn chỉnh của CPU nhằm đảm bảo tối ưu tốc độ truy cập
+            các byte dữ liệu, bằng cách sắp xếp các biến struct được cấp
+            phát tại giá trị địa chỉ chia hết cho kiểu dữ liệu khai báo 
         Why ? 
             - CPU truy cập bộ nhớ như thế nào ? phụ thuộc
                 + natural unit -> thường là word -> là gì ?
@@ -25,7 +26,7 @@
             --------------------------------------
             address       a          b
             0x00 - 0x03   0x00       0x01 - 0x03
-            0x04          0x04
+            0x04                     0x04
             --------------------------------------
             => giải pháp ? CPU tự động căn chỉnh địa chỉ các biến sao cho
             đảm bảo tối ưu thao tác truy xuất 
@@ -74,12 +75,18 @@
 
 typedef int sensor_data;
 /*
-    - kích thước của member có datatype max
-    - thứ tự sắp xếp của member -> ảnh hưởng phát sinh byte padding ít/nhiều/ko có
+    - số byte cấp phát phụ thuộc kích thước của member có datatype max
+    - thứ tự sắp xếp của member datatype -> ảnh hưởng số lượng padding byte sinh ra
     - size = total members + padding 
 */
 typedef struct data
 {
+    /* Note: 
+        Tạo kiểu dữ liệu mới (User-defined Data type)
+        - chưa được cấp pháp memory
+        - các member bên trong chỉ được cấp phát address khi tạo ra các biến
+        với kiểu struct datatype đã tạo
+    */
     // cấp phát 8 byte : 0x00 - 0x07
     double a; 
     // câp phát 8 byte : 0x08 - 0x0f
@@ -103,13 +110,6 @@ sensor_data a;
     + các member sẽ không có địa chỉ cụ thể
     + các member có cùng datatype chia sẻ chung 1 vùng nhớ 
 */
-
-/* 
-    Tạo kiểu dữ liệu mới (User-defined Data type)
-    - chưa được cấp pháp memory
-    - các member bên trong chỉ được cấp phát address khi tạo ra các biến
-    với kiểu struct datatype đã tạo
-*/
 typedef struct field{
     //cấp phát 2 byte : 0xc0 - 0xc1
     uint8_t a : 3;
@@ -117,26 +117,22 @@ typedef struct field{
     //cấp phát 2 byte -> 0xc2 - 0xc3 
     uint16_t c : 10;
 }field;
-
-typedef struct {
-  int time;
-  float temp;
-  int humidity;
-} Sensor_t; 
-// thêm đuôi +t hoặc Type để định nghĩa 1 kiểu user-define datatype  
-// theo chuẩn thiết kế - tuân theo thiết kế các kiểu datatype trong thiết kế thu viện hệ thống như stdint.h  
 int main()
 {
 
-    //khai báo và truy xuất gán giá trị trực tiếp
+    /*Truy xuất struct member*/
+    
+    //gán giá trị ngay khi khai báo 
     data dt = {.a = 12,
                   .b = 1,
                   .c = 19}; 
 
-    data dt1 = {12,21,34}; //gán giá trị ngầm định 
-    sizeof(A);
+    //gán giá trị ngầm định 
+    data dt1 = {12,21,34}; 
     data* pdt = &dt; 
     pdt->a = 20; // (*pdt).a = 20;
+
+    sizeof(A);
     printf("address of a = %p\n", &dt.a);
     printf("address of b = %p\n", &dt.b);
     printf("address of c = %p\n", &dt.c);

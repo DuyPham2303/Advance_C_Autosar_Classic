@@ -1,43 +1,39 @@
 #include <stdio.h>
-#include <stdlib.h> //malloc , calloc, realloc
-int arr[5];
+#include <stdint.h>
+#include <stdlib.h>
+
+//cấp phát tĩnh -> số lượng phần tử được cố định
+//int arr[1024*1024] = {2, 3, 5, 6, 8};
+
 int main(){
-    // for(int i = 0 ; i < sizeof(arr)/sizeof(arr[0]) ;i++){
-    //     arr[i] = i;
-    //     printf("arr[%d]:%d\n",i,i);
-    // }
-    // int a = 21,b = 21,c = 31;
-
-    // arr[7] = 12;
-    /* 
-        - số lượng phần tử 
-        - kiểu dữ liệu mảng
-    */
+    //mảng = số lượng * kích thước 
     int size = 0;
-    printf("nhập size:");
-    scanf("%d",&size);
-    int* p = (int*)malloc(size*sizeof(int)); 
-    if(p == NULL){
-        perror("không đủ vùng nhớ cấp phát trên heap");
-        return 1;
-    }
-    printf("ban đầu\n");
-    for(int i = 0 ; i < size ;i++){
-        p[i] = i;
-        printf("arr[%d]:%d\taddress: %p\n",i,p[i],&p[i]);
-    }
-    size = size + 5;
-    p = (int*)realloc(p,size);
-    printf("lúc sau\n");
-    for(int i = 0 ; i < size ;i++){
-        p[i] = i;
-        printf("arr[%d]:%d\taddress: %p\n",i,p[i],&p[i]);
-    }
-
-    free(p); 
-
-    p = NULL; //dangling pointer
     
+    printf("nhap so phan tu:");
+    scanf("%d",&size);
 
+    uint8_t* ptr = (uint8_t*)malloc(size * sizeof(uint8_t)); //0x01,0x02,0x03,0x04,0x05 -> pointer 
+    
+    if(ptr == NULL){
+        printf("không đủ vùng nhớ cấp phát trên heap\n");
+        return -1;
+    }
+
+    for(int i = 0 ; i < size ; i++){
+        ptr[i] = i;
+        printf("value[%d]:%d\tadd:%p\n",i,ptr[i],&ptr[i]);
+    }
+
+    size += 5;
+
+    ptr = (uint8_t*)realloc(ptr,size*sizeof(uint8_t));
+
+    printf("Sau khi realloc\n");
+    for(int i = 0 ; i < size ; i++){
+        ptr[i] = i;
+        printf("value[%d]:%d\tadd:%p\n",i,ptr[i],&ptr[i]);
+    }
+
+    free(ptr);  
     return 0;
 }
