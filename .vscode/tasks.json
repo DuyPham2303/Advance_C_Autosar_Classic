@@ -10,7 +10,7 @@
                 //"-Wextra",
                 "-std=c17",
                 "${file}",
-                "stack.c",
+                "queue.c",
                 "-o",
                 "${fileDirname}\\${fileBasenameNoExtension}.exe"
             ],

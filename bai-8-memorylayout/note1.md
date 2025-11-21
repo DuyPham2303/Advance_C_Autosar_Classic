@@ -7,3 +7,16 @@ QUY trình xử lý của file thực thi sau khi load lên
 # trên MCU
 - CPU truy cập trực tiếp .text và .rdata từ flash (ko copy xuống RAM)
 - Startup code tiến hành copy .data từ flash xuống RAM và zero hóa .bss 
+
+
+call stack 
+- local var
++ param
+- return address 
+- thanh ghi luu tru du lieu tam thoi
+
+PC - program counter : thanh ghi luu tru dia chi hien tai cua cau lenh 
+SP - Stack pointer : thanh ghi quan ly vi tri hien tai o tren stack
+
+PUSH : SP--
+POP  : SP++

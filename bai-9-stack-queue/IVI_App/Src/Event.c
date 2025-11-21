@@ -1,6 +1,13 @@
 #include "../Inc/Event.h"
 static int count = 0;
 
+static bool IsEventFull(Event_queue event){
+    return (event.front == ((event.rear + 1) % event.size));
+}
+static bool IsEventEmpty(Event_queue event){
+    return (event.front == -1);
+}
+
 void Init_ListEvent(Event_queue* event,int max_event){
    event->list_event = (char**)malloc(max_event * sizeof(char*)); 
     if(event->list_event == NULL){
@@ -9,12 +16,6 @@ void Init_ListEvent(Event_queue* event,int max_event){
     }
    event->size = max_event;
    event->front = event->rear = -1;
-}
-bool IsEventFull(Event_queue event){
-    return (event.front == ((event.rear + 1) % event.size));
-}
-bool IsEventEmpty(Event_queue event){
-    return (event.front == -1);
 }
 
 void enqueue_event(Event_queue* event_queue,const char* event_name) {

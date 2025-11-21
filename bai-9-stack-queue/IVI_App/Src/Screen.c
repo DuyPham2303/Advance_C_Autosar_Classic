@@ -2,24 +2,13 @@
 
 static int count = 0;
 
-void Init_ListScreen(Screen_Stack* screen,int max_screen){
-    screen->list_screen = (char**)malloc(max_screen * sizeof(char*)); 
-    if(screen->list_screen == NULL){
-        printf("không đủ bộ nhớ cấp phát");
-        return;
-    }
-    screen->size = max_screen;
-    screen->top = -1;
-}
-
-bool IsScreenfull(Screen_Stack screen){
+static bool IsScreenfull(Screen_Stack screen){
     return (screen.top == screen.size - 1);
 }
-bool IsScreenEmpty(Screen_Stack screen){
+static bool IsScreenEmpty(Screen_Stack screen){
     return (screen.top == -1);
 }
-
-void map_screen(const char* screen) {
+static void map_screen(const char* screen) {
     printf("[UI] %s Screen\n", screen);
     if (strcmp(screen, "Home") == 0) {
         printf("  - Audio\n  - Bluetooth\n  - Settings\n");
@@ -34,6 +23,15 @@ void map_screen(const char* screen) {
     }
 }
 
+void Init_ListScreen(Screen_Stack* screen,int max_screen){
+    screen->list_screen = (char**)malloc(max_screen * sizeof(char*)); 
+    if(screen->list_screen == NULL){
+        printf("không đủ bộ nhớ cấp phát");
+        return;
+    }
+    screen->size = max_screen;
+    screen->top = -1;
+}
 void show_current_screen(Screen_Stack screen_stack) {
     if (!IsScreenEmpty(screen_stack)) {
         printf("Currently at: %s\n", screen_stack.list_screen[screen_stack.top]);

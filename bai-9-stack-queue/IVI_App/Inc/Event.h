@@ -15,10 +15,6 @@ typedef struct{
 
 void Init_ListEvent(Event_queue* event,int max_event);
 
-bool IsEventFull(Event_queue event);
-
-bool IsEventEmpty(Event_queue event);
-
 void enqueue_event(Event_queue* event_queue,const char* event_name);
 
 void process_event(Event_queue* event_queue);

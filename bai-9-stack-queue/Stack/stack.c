@@ -1,71 +1,80 @@
-#include"stack.h"
+#include "stack.h"
 
-//hàm khởi tạo bộ nhớ cho ngăn xếp
-StackStatus Init_Stack(Stack* stack,int size){
-    stack->items = (int*)malloc(sizeof(int) * size);
-    if(stack->items == NULL){
-        printf("Heap Allocation failed\n");
-        return STACK_E_NOT_OK;
-    }
-    stack->size = size;
-    stack->top = -1;
-    return STACK_E_OK;
+static bool Stack_IsEmpty(const Stack* stack)
+{
+    return (stack == NULL || stack->top == -1);
 }
 
-//hàm kiểm tra stack đầy
-StackStatus Isfull(const Stack* stack){
+static bool Stack_IsFull(const Stack* stack)
+{
+    if (stack == NULL) return true;
     return (stack->top == stack->size - 1);
 }
 
-//hàm kiểm tra stack rỗng
-StackStatus IsEmpty(const Stack* stack){
-    return (stack->top == -1);
+StackStatus Stack_Init(Stack* stack, int size)
+{
+    if (stack == NULL || size <= 0)
+        return STACK_INVALID_ARG;
+
+    stack->items = (int*)malloc(sizeof(int) * size);
+    if (stack->items == NULL)
+        return STACK_MEMORY_ERROR;
+
+    stack->size = size;
+    stack->top = -1;
+
+    return STACK_INIT_OK;
 }
 
-//hàm thêm phần tử vào stack
-StackStatus Push(Stack* stack,int data){
-    if(Isfull(stack)){
-        printf("stack đầy");
-        return STACK_E_NOT_OK;
-    }
-    printf("thêm %d\n",data);
-    stack->items[++stack->top] = data;  //tang8 top -> gán data
-    return STACK_E_OK;
+StackStatus Stack_Push(Stack* stack, int value)
+{
+    if (stack == NULL)
+        return STACK_INVALID_ARG;
+
+    if (Stack_IsFull(stack))
+        return STACK_FULL;
+
+    stack->items[++stack->top] = value;
+    return STACK_HANDLE_OK;
 }
 
-//hàm xóa phần tử ở đỉnh stack
-StackStatus Pop(Stack* stack,int* outdata){
-    if(IsEmpty(stack)){
-        printf("stack rỗng");
-        *outdata = -1;
-        return STACK_E_NOT_OK;
-    }
-    *outdata = stack->items[stack->top--];  //trả về -> giảm top
-    return STACK_E_OK;
+StackStatus Stack_Pop(Stack* stack, int* outValue)
+{
+    if (stack == NULL || outValue == NULL)
+        return STACK_INVALID_ARG;
+
+    if (Stack_IsEmpty(stack))
+        return STACK_EMPTY;
+
+    *outValue = stack->items[stack->top--];
+    return STACK_HANDLE_OK;
 }
 
-//đọc / lấy phần tử ở đỉnh stack
-StackStatus Top(const Stack* stack,int* data){
-    if(IsEmpty(stack)){ 
-        *data = -1;
-        return STACK_E_NOT_OK;
-    }
-    *data = stack->items[stack->top];
-    return STACK_E_OK;
+StackStatus Stack_Top(const Stack* stack, int* outValue)
+{
+    if (stack == NULL || outValue == NULL)
+        return STACK_INVALID_ARG;
+
+    if (Stack_IsEmpty(stack))
+        return STACK_EMPTY;
+
+    *outValue = stack->items[stack->top];
+    return STACK_HANDLE_OK;
 }
 
+StackStatus Stack_Free(Stack* stack)
+{
+    if (stack == NULL)
+        return STACK_INVALID_ARG;
 
-//hàm giải phóng stack
-StackStatus FreeStack(Stack* stack){
-    //tránh gọi stack 2 lần sau khi đã free
-    if(stack == NULL) return STACK_E_NOT_OK;
-
-    if(stack->items != NULL){
+    if (stack->items != NULL)
+    {
         free(stack->items);
         stack->items = NULL;
     }
+
     stack->size = 0;
     stack->top = -1;
-    return STACK_E_OK;
-}
 
+    return STACK_FREE_OK;
+}

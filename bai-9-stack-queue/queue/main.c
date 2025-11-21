@@ -1,49 +1,53 @@
-#include "queue.h"
+# include "queue.h"
 
-//n! = n(n -1)(n - 2)...1 -
-void giaithua(int n){
+int giaithua(int n){
     Queue queue;
+    int size = 5;
+    Queue_Init(&queue,size);
 
-    Init_Queue(&queue,n);
-
-    for(int i = n ; i > 0 ;i--) enqueue(&queue,i); 
+    for(int i = 1 ; i <= size ; i++)
+        Queue_Enqueue(&queue,i);
 
     int result = 1;
-    for(int i = 0 ; i < n ;i++){
-        result *= getFront(queue);
-        printf("%d*",getFront(queue));
-        dequeue(&queue);
+    for(int i = 1 ; i <= size ; i++){
+        int outdata;
+        Queue_Dequeue(&queue,&outdata);
+        printf("%d",outdata);
+        if(i < size) 
+            printf("*");
+        result *= outdata;
     }
-    printf(" = %d",result); 
+    return result;
 }
-int main()
-{
-    Queue queue1;
-    int size = 5;
-    Init_Queue(&queue1, size);
-    giaithua(size);
+int main(){
+    
+    printf("= %d",giaithua(5));
     return 0;
+    Queue queue;
+
+    Queue_Init(&queue,5);
+
+    for(int i = 0 ; i < 5 ; i++){
+        QUEUE_LOG(&queue.items[queue.rear],Queue_Enqueue(&queue,i));
+    }
+
+    QUEUE_LOG(&queue.items[queue.rear],Queue_Enqueue(&queue,21));
+    
+    printf("after enqueue\n");
+    Display_Queue(&queue);
+    
+    int outdata;
+    
+    QUEUE_LOG(&outdata,Queue_Dequeue(&queue,&outdata));
+    QUEUE_LOG(&outdata,Queue_Dequeue(&queue,&outdata));
+    printf("after dequeue\n");
+    Display_Queue(&queue);
+    
+    printf("after enqueue\n");
+    QUEUE_LOG(&queue.items[queue.rear],Queue_Enqueue(&queue,41));
+    QUEUE_LOG(&queue.items[queue.rear],Queue_Enqueue(&queue,29));
+    Display_Queue(&queue);
 
 
-    /*   for (int i = 0; i < size; i++)
-      {
-          int data = i + 2;
-          enqueue(&queue1, data);
-      } */
-
-    enqueue(&queue1, 2);
-    enqueue(&queue1, 4);
-    enqueue(&queue1, 6);
-
-    dequeue(&queue1);
-    dequeue(&queue1);
-    dequeue(&queue1);
-
-    dequeue(&queue1);
-    /*
-        enqueue(&queue1, 7);
-        enqueue(&queue1, 8);
-        printQueue(queue1);
-
-        printf("front : %d\nrear: %d\n", getFront(queue1), getRear(queue1)); */
+    return 0;
 }

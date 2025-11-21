@@ -27,6 +27,10 @@
         "limits": "c",
         "streambuf": "c",
         "stdint.h": "c",
-        "stdbool.h": "c"
+        "stdbool.h": "c",
+        "string": "c",
+        "string_view": "c",
+        "span": "c",
+        "initializer_list": "c"
     }
 }
