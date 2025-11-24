@@ -21,41 +21,41 @@ clean:
 # CÁCH TỔNG QUÁT 
 
 # Tên của chương trình
-# TARGET = app
+TARGET = app
 
-# # Thư mục chứa header và source files
-# HEADER_DIR = inc
-# SOURCE_DIR = src
+# Thư mục chứa header và source files
+HEADER_DIR = inc
+SOURCE_DIR = src
 
-# # Các tệp nguồn và tệp object tương ứng
-# SOURCES := $(wildcard $(SOURCE_DIR)/*.c)
-# OBJECTS := $(SOURCES:.c=.o)
+# Các tệp nguồn và tệp object tương ứng
+SOURCES := $(wildcard $(SOURCE_DIR)/*.c)
+OBJECTS := $(SOURCES:.c=.o)
 
-# # Trình biên dịch và các cờ
-# CC = gcc
-# CFLAGS = -I$(HEADER_DIR) -Wall -Wextra
+# Trình biên dịch và các cờ
+CC = gcc
+CFLAGS = -I$(HEADER_DIR) -Wall -Wextra
 
-# # Quy tắc để tạo ra tệp thực thi
-# $(TARGET): $(OBJECTS)
-# 	$(CC) -o $@ $^
+# Quy tắc để tạo ra tệp thực thi
+$(TARGET): $(OBJECTS)
+	$(CC) -o $@ $^
 
-# # Quy tắc để biên dịch các tệp .c thành .o
-# $(SOURCE_DIR)/%.o: $(SOURCE_DIR)/%.c
-# 	$(CC) $(CFLAGS) -c -o $@ $<
+# Quy tắc để biên dịch các tệp .c thành .o
+$(SOURCE_DIR)/%.o: $(SOURCE_DIR)/%.c
+	$(CC) $(CFLAGS) -c -o $@ $<
 
-# # Quy tắc để build file thực thi
-# build: $(TARGET)
+# Quy tắc để build file thực thi
+build: $(TARGET)
 
-# # quy tắc để build & run
-# run: 
-# 	./$(TARGET)
+# quy tắc để build & run
+run: 
+	./$(TARGET)
 
-# # Quy tắc để làm sạch thư mục build
-# clean:
-# 	rm -f $(SOURCE_DIR)/*.o $(TARGET)
+# Quy tắc để làm sạch thư mục build
+clean:
+	rm -f $(SOURCE_DIR)/*.o $(TARGET)
 
-# # Quy tắc giả (phony target)
-# .PHONY: all clean run build
+# Quy tắc giả (phony target)
+.PHONY: all clean run build
 
 
 

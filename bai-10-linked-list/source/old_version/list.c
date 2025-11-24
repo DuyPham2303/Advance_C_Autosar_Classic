@@ -208,7 +208,6 @@ void insert(Node **head, int value, int position)
         current->next = new_node;
     }
 }
-
 void erase(Node **head, int position)
 {
     if (empty(*head))            

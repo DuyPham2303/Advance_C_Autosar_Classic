@@ -13,17 +13,20 @@
    **Note** : Triển khai chương trình lớn cần quan tâm tốc độ xử lý 
             => ảnh hưởng hiệu suất hệ thống -> Linkest list tối ưu so với array
 ## LÝ THUYẾT
+   **Nội dung triển khai** 
     - So sánh với Array (giống ? khác ?)
     - Triển khai cấu trúc 
         + node ? 
         + truy cập đến node ? (con trỏ ?) => (pointer + i) ? => chỉ áp dụng với elements có linear address
         => sử dụng con trỏ next (trỏ tới bất kỳ pointer nào)
     - Outline ra cấu trúc hình ảnh
-   **Note** : 1 chuỗi các node
-    => chứa 2 đặc điểm : data và next pointer
+
 ## TRIỂN KHAI 
-    - Tóm tắt lại cấu trúc linkest list trên slide 
    **Triển khai code**
+    __Hướng tiếp cận__
+    chia làm 2 phase:
+    + Organize data : tổ chức data 
+    + Operation : các hàm thao tác 
     __define struct__:
         + lưu ý về khai báo member struct của chính struct đó
     __Hàm init__:
@@ -36,11 +39,11 @@
         + quy định nguyên tắc hoạt động FIFO , LIFO 
             -> chỉ cho phép thêm/xóa ở vị trí quy định
             -> kiểm tra full/empty
-            -> truy cập bằng cách lặp/duyệt qua các node (địa chỉ node ko liển kề)
+            -> truy cập bằng chỉ số 
         + linkest list linh hoạt 
             -> thêm/xóa bất kể vị trí
-            -> truy cập bằng chỉ số 
-            -> kiểm tra empty
+            -> ko cần kiểm tra trạng thái
+            -> truy cập bằng cách lặp/duyệt qua các node
     __Các hàm thay đổi__
         + pushback
             -> truyền double pointer ?
