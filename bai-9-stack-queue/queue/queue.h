@@ -3,11 +3,12 @@
 
 #include <stdint.h>
 #include <stdbool.h>
+#include <stdlib.h>
 #include <stddef.h> // size_t
 #include <stdio.h>
 typedef enum
 {
-    QUEUE_INIT_OK = 0,
+    QUEUE_INIT_OK,  
     QUEUE_FREE_OK,
     QUEUE_HANDLE_OK,
     QUEUE_FULL,
@@ -19,7 +20,7 @@ typedef enum
 typedef struct
 {
     int *items;
-    size_t size;
+    int size;
     int front;
     int rear;
 } Queue;
@@ -58,6 +59,5 @@ QueueStatus Queue_Dequeue(Queue *q, int *out);
 QueueStatus Queue_Front(const Queue *q, int *out);
 QueueStatus Queue_Rear(const Queue *q, int *out);
 QueueStatus Queue_Free(Queue *q);
-void Display_Queue(const Queue *q);
 
 #endif

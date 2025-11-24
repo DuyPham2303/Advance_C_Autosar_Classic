@@ -7,7 +7,7 @@ BINARY_DIR = bin
 # Danh sách source và object files (vpath cho phép tìm .c trong nhiều folder)
 vpath %.c $(SOURCE_DIRS)
 SOURCES = $(foreach dir,$(SOURCE_DIRS),$(wildcard $(dir)/*.c))
-OBJECTS = $(patsubst %.c,$(BINARY_DIR)/%.o,$(notdir $(SOURCES))) 
+OBJECTS = $(patsubst %.c,$(BINARY_DIR)/%.o,$(SOURCES))
 
 # Trình biên dịch và flags
 CC = gcc
@@ -34,7 +34,7 @@ run: $(BINARY_DIR)/$(TARGET)
 
 # Quy tắc dọn sạch
 clean:
-	rm -rf $(BINARY_DIR) $(TARGET)
+	rm -rf $(BINARY_DIR)
 
 # Quy tắc giả
 .PHONY: all clean run
