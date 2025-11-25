@@ -1,61 +1,65 @@
 #ifndef LIST_H
 #define LIST_H
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
-#include <setjmp.h>
 
 typedef struct Node 
 {
     struct Node *next; 
     int val;
 }Node;
-Node *CreateNode(int val);
-/* Error codes for list operations. Add new values here if needed. */
-typedef enum ListError
+
+/* Error codes for list operations. Using legacy enum names as requested. */
+typedef enum ListStatus
 {
     LIST_OK = 0,
-    LIST_ERR_OOM,          /* Out of memory */
-    LIST_ERR_EMPTY,        /* Operation on empty list */
-    LIST_ERR_OUT_OF_RANGE, /* Index out of range */
-    LIST_ERR_INVALID_ARG   /* Invalid argument */
-} ListError;
+    LIST_EMPTY,          /* Operation on empty list */
+    LIST_OUT_OF_RANGE,   /* Index out of range */
+    LIST_ALLOC_FAILED,   /* Out of memory / allocation failure */
+    LIST_NULL            /* Invalid/null argument */
+}ListStatus;
 
-/* Backwards-compatible alias: some modules use the older `ListStatus` name.
-   Provide an alias so both identifiers are available regardless of which
-   header is included. */
-typedef ListError ListStatus;
+Node *CreateNode(int val, ListStatus *status);
 
-/* Global jmp buffer used by the simple list error handling helpers.
-   Call `list_setjmp()` (or `setjmp(list_env)` directly) in your high-level
-   caller to establish a recovery point before invoking list operations that
-   may `list_throw()` on error. Example:
+// API khởi tạo node
+Node *CreateNode(int val, ListStatus *status);
 
-   if (list_setjmp() == 0) {
-       // normal path: call list functions
-   } else {
-       // error recovery path: a ListError code was thrown
-   }
-*/
-extern jmp_buf list_env;
-
-/* Debug / error helper functions (implemented in debug.c) */
-int list_setjmp(void);                    /* wrapper for setjmp(list_env) */
-void list_log(ListError e, const char *msg); /* log a human-readable message */
-void list_throw(ListError e, const char *msg); /* log then longjmp to list_env */
-
-bool empty(Node *head);
-int size(Node *head);
-int get(Node *head, int pos);
+// In toàn bộ list
 void printNode(Node *head);
-int front(Node *head);
-int back(Node *head);
-void push_back(Node **head, int value);
-void push_front(Node **head, int value);
-void insert(Node **head, int value, int position);
-void pop_back(Node **head);
-void pop_front(Node **head);
-void erase(Node **head, int pos);
-void clear(Node **head);
 
-#endif
+// Lấy kích thước list
+int size(Node *head);
+
+// Lấy giá trị node đầu tiên
+ListStatus front(Node *head, int *out);
+
+// Lấy giá trị node cuối cùng
+ListStatus back(Node *head, int *out);
+
+// Lấy giá trị tại vị trí bất kỳ
+ListStatus get(Node *head, int pos, int *out);
+
+// Thêm node vào đầu list
+ListStatus push_front(Node **head, int value);
+
+// Thêm node vào cuối list
+ListStatus push_back(Node **head, int value);
+
+// Xoá node đầu tiên
+ListStatus pop_front(Node **head);
+
+// Xoá node cuối cùng
+ListStatus pop_back(Node **head);
+
+// Chèn node ở vị trí bất kỳ
+ListStatus insert(Node **head, int value, int position);
+
+// Xoá node ở vị trí bất kỳ
+ListStatus erase(Node **head, int position);
+
+// Xoá toàn bộ list
+ListStatus clear(Node **head);
+
+#endif // LIST_H
