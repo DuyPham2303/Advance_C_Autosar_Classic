@@ -22,7 +22,7 @@
     - Outline ra cấu trúc hình ảnh
 
 ## TRIỂN KHAI 
-   **Triển khai code**
+   **Triển khai sơ bộ**
     __Hướng tiếp cận__
     chia làm 2 phase:
     + Organize data : tổ chức data 
@@ -42,13 +42,26 @@
             -> truy cập bằng chỉ số 
         + linkest list linh hoạt 
             -> thêm/xóa bất kể vị trí
-            -> ko cần kiểm tra trạng thái
+            -> chỉ check empty 
             -> truy cập bằng cách lặp/duyệt qua các node
-    __Các hàm thay đổi__
-        + pushback
-            -> truyền double pointer ?
-            -> dùng biến tạm để duyệt qua node thay vì trực tiếp trên node gốc ?
-        + giải thích hướng triển khai các hàm còn lai
+     **Triển khai phần khai báo các prototype**
+        - Phân tích và liệt kê các thao tác 
+        - Các điểm cần lưu ý về trạng thái xử lý 
+        - Thiết kế enum mô tả mã lỗi cần xử lý
+    __Lưu ý về các hàm thao tác__
+        + truyền double pointer ?
+        + 2 cách duyệt qua list ?
+        **dùng biến tạm**        
+            ```c
+            Node* p = *head; //lưu lại địa chỉ của node để thao tác trung gian
+            p = p->next;    //duyệt qua list -> head cũng thay đổi
+            ```    
+        **thao tác trực tiếp**  
+             ```c
+            (*head) = (*head)->next;    //thao tác trực tiếp trên con trỏ gốc bên ngoài hàm để cập nhật địa chỉ liên kết 
+            ```  
+
+        
 ----------------------------------------------------
 # VẤN ĐỀ
 1) Hàm insert 

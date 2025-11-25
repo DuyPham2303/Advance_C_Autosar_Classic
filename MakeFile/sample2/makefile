@@ -1,62 +1,51 @@
 # BASIC 
-CC = gcc
-CFLAGS = -Iinc -Wall -Werror -g 
+# CC = gcc
+# CFLAGS = -Iinc -Wall -Werror -g
 
-app: main.o test1.o test2.o
-	$(CC) main.o test1.o test2.o -o app
-main.o: src/main.c 
-	$(CC) $(CFLAGS) -c src/main.c -o main.o
+# app: main.o test1.o test2.o
+# 	$(CC) main.o test1.o test2.o -o app.exe
 
-test1.o: src/test1.c inc/test1.h
-	$(CC) $(CFLAGS) -c src/test1.c -o test1.o
+# main.o: src/main.c
+# 	$(CC) $(CFLAGS) -c src/main.c -o main.o
 
-test2.o: src/test2.c inc/test2.h
-	$(CC) $(CFLAGS) -c src/test2.c -o test2.o
+# test1.o: src/test1.c
+# 	$(CC) $(CFLAGS) -c src/test1.c -o test1.o
 
-clean:
-	rm -f *.o app
+# test2.o: src/test2.c
+# 	$(CC) $(CFLAGS) -c src/test2.c -o test2.o
 
-.PHONY: clean app
+# CÁCH TỔNG QUÁT - NÂNG CAO
 
-# CÁCH TỔNG QUÁT 
-
-# Tên của chương trình
+# tên của tệp thực thi
 TARGET = app
 
 # Thư mục chứa header và source files
 HEADER_DIR = inc
 SOURCE_DIR = src
 
-# Các tệp nguồn và tệp object tương ứng
-SOURCES := $(wildcard $(SOURCE_DIR)/*.c)
-OBJECTS := $(SOURCES:.c=.o)
+# Đọc ra các file nguồn và object tương ứng 
+SOURCES = $(wildcard $(SOURCE_DIR)/*.c)
+OBJECTS = $(SOURCES:.c=.o)
 
-# Trình biên dịch và các cờ
+# Khai báo compiler và các cờ cần thiết
 CC = gcc
-CFLAGS = -I$(HEADER_DIR) -Wall -Wextra
+CFLAGS = -I$(HEADER_DIR) -Wall -Werror -g
 
-# Quy tắc để tạo ra tệp thực thi
 $(TARGET): $(OBJECTS)
-	$(CC) -o $@ $^
+	$(CC) -o $@ $^ 
 
-# Quy tắc để biên dịch các tệp .c thành .o
-$(SOURCE_DIR)/%.o: $(SOURCE_DIR)/%.c
+# Quy tắc để biên dịch các tệp .c -> .o
+$(SOURCE_DIR)/%.o : $(SOURCE_DIR)/%.c 
 	$(CC) $(CFLAGS) -c -o $@ $<
 
-# Quy tắc để build file thực thi
+# Quy tắc để tạo ra tệp .exe
 build: $(TARGET)
 
-# quy tắc để build & run
-run: 
+# Quy tắc để run
+run:
 	./$(TARGET)
 
-# Quy tắc để làm sạch thư mục build
 clean:
-	rm -f $(SOURCE_DIR)/*.o $(TARGET)
+	rm -rf $(SOURCE_DIR)/*.o $(TARGET)
 
-# Quy tắc giả (phony target)
 .PHONY: all clean run build
-
-
-
-

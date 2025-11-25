@@ -1,4 +1,5 @@
 #include "Event.h"
+
 static int count = 0;
 
 void Init_ListEvent(Event_queue* event,int max_event){
@@ -10,13 +11,12 @@ void Init_ListEvent(Event_queue* event,int max_event){
    event->size = max_event;
    event->front = event->rear = -1;
 }
-bool IsEventFull(Event_queue event){
+static bool IsEventFull(Event_queue event){
     return (event.front == ((event.rear + 1) % event.size));
 }
-bool IsEventEmpty(Event_queue event){
+static bool IsEventEmpty(Event_queue event){
     return (event.front == -1);
 }
-
 void enqueue_event(Event_queue* event_queue,const char* event_name) {
     if (!IsEventFull(*event_queue)) {
         if(IsEventEmpty(*event_queue)){
@@ -52,7 +52,6 @@ void enqueue_event(Event_queue* event_queue,const char* event_name) {
     if(count <= (*event_queue).size) printf("total Events : %d\n",count);
     else count = (*event_queue).size;
 }
-
 void process_event(Event_queue* event_queue) {
     if (!IsEventEmpty(*event_queue)) {
         printf("Processing event: %s\n", event_queue->list_event[event_queue->front]);

@@ -12,14 +12,13 @@ void Init_ListScreen(Screen_Stack* screen,int max_screen){
     screen->top = -1;
 }
 
-bool IsScreenfull(Screen_Stack screen){
+static bool IsScreenfull(Screen_Stack screen){
     return (screen.top == screen.size - 1);
 }
-bool IsScreenEmpty(Screen_Stack screen){
+static bool IsScreenEmpty(Screen_Stack screen){
     return (screen.top == -1);
 }
-
-void map_screen(const char* screen) {
+static void map_screen(const char* screen) {
     printf("[UI] %s Screen\n", screen);
     if (strcmp(screen, "Home") == 0) {
         printf("  - Audio\n  - Bluetooth\n  - Settings\n");

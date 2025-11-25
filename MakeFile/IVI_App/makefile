@@ -1,13 +1,17 @@
 # Tên chương trình và thư mục
 TARGET = run
 HEADER_DIR = Inc
-SOURCE_DIRS = Src demo
+SOURCE_DIRS = Src
 BINARY_DIR = bin
 
-# Danh sách source và object files (vpath cho phép tìm .c trong nhiều folder)
-vpath %.c $(SOURCE_DIRS)
-SOURCES = $(foreach dir,$(SOURCE_DIRS),$(wildcard $(dir)/*.c))
-OBJECTS = $(patsubst %.c,$(BINARY_DIR)/%.o,$(SOURCES))
+# Danh sách source và object files
+SOURCES = $(wildcard $(SOURCE_DIRS)/*.c)
+
+# Chỉ lấy tên file (không kèm đường dẫn)
+SOURCE_NAMES = $(notdir $(SOURCES))
+
+# object nằm trong bin/ nhưng vẫn giữ đúng tên
+OBJECTS = $(patsubst %.c,$(BINARY_DIR)/%.o,$(SOURCE_NAMES))
 
 # Trình biên dịch và flags
 CC = gcc
@@ -19,22 +23,23 @@ all: $(BINARY_DIR)/$(TARGET)
 $(BINARY_DIR):
 	mkdir -p $(BINARY_DIR)
 
-# Link các object thành file thực thi trong bin/
+# Link
 $(BINARY_DIR)/$(TARGET): $(OBJECTS) | $(BINARY_DIR)
 	@echo "Linking $@"
 	$(CC) -g -o $@ $^
 
-# Quy tắc biên dịch mỗi file .c thành file .o trong bin/
+# Quy tắc build .c -> .o
+# Dùng vpath để tìm file .c từ SOURCE_DIRS
+vpath %.c $(SOURCE_DIRS)
+
 $(BINARY_DIR)/%.o: %.c | $(BINARY_DIR)
+	@echo "Compiling $<"
 	$(CC) $(CFLAGS) -c -o $@ $<
 
-# Quy tắc mặc định
 run: $(BINARY_DIR)/$(TARGET)
 	./$(BINARY_DIR)/$(TARGET)
 
-# Quy tắc dọn sạch
 clean:
 	rm -rf $(BINARY_DIR)
 
-# Quy tắc giả
 .PHONY: all clean run

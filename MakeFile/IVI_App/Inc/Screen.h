@@ -14,12 +14,6 @@ typedef struct{
 
 void Init_ListScreen(Screen_Stack* screen,int max_screen);
 
-bool IsScreenfull(Screen_Stack screen);
-
-bool IsScreenEmpty(Screen_Stack screen);
-
-void map_screen(const char* screen);
-
 void show_current_screen(Screen_Stack screen_stack);
 
 void push_screen(Screen_Stack* screen_stack,const char* screen_name);

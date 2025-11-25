@@ -1,24 +1,20 @@
 #include "list.h"
 
+static Node *getLast(Node *head);
+
 // Tạo node, kiểm tra lỗi cấp phát
 Node *CreateNode(int val, ListStatus *status)
 {
+    *status = LIST_OK;
     Node *node = (Node *)malloc(sizeof(Node));
     if (node == NULL)
     {
-        if (status) *status = LIST_ALLOC_FAILED;
+        *status = LIST_ALLOC_FAILED;
         return NULL;
     }
     node->val = val;
     node->next = NULL;
-
-    if (status) *status = LIST_OK;
     return node;
-}
-
-static bool empty(Node *head)
-{
-    return (head == NULL);
 }
 
 void printNode(Node *head)
@@ -28,7 +24,7 @@ void printNode(Node *head)
         printf("empty list");
         return;
     }
-    const Node *current = head;
+    Node *current = head;
     while (current != NULL)
     {
         printf("%d\t", current->val);
@@ -37,18 +33,10 @@ void printNode(Node *head)
     printf("\n");
 }
 
-static Node *getLast(Node *head)
-{
-    if (head == NULL) return NULL;
-    while (head->next != NULL)
-        head = head->next;
-    return head;
-}
-
 int size(Node *head)
 {
     int count = 0;
-    const Node *current = head;
+    Node *current = head;
     while (current != NULL)
     {
         count++;
@@ -223,4 +211,13 @@ ListStatus clear(Node **head)
         free(temp);
     }
     return LIST_OK;
+}
+
+
+static Node *getLast(Node *head)
+{
+    if (head == NULL) return NULL;
+    while (head->next != NULL)
+        head = head->next;
+    return head;
 }

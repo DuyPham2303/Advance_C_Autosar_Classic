@@ -1,9 +1,8 @@
 #include "Screen.h"
-#include "demo.h"
 #include "Event.h"
 
 #define MAX_EVENTS   10
-#define MAX_SCREENS  1
+#define MAX_SCREENS  10
 
 void show_menu() {
     printf("\n========= UI MENU =========\n");
@@ -33,7 +32,6 @@ int main() {
     int choice;
     int running = 1;
 
-    demo();
     while (running) {
         show_menu();
         scanf("%d", &choice);
@@ -50,7 +48,7 @@ int main() {
             case 8: process_event(&eventlst); break;
             case 9: show_current_screen(screenlst); break;
             case 0: running = 0; break;
-            default: printf("⚠️ Invalid option\n");
+            default: printf("Invalid option\n");
         }
     }
 
@@ -59,6 +57,6 @@ int main() {
     screenlst.list_screen = NULL;
     eventlst.list_event = NULL;
 
-    printf("🚗 UI system terminated.\n");
+    printf("UI system terminated.\n");
     return 0;
 }
