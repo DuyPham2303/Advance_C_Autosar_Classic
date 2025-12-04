@@ -166,7 +166,7 @@ static CenterPoint *BinarySearch(CenterPoint *proot, const char *search)
 }
 static CenterPoint *BuildTree(UserNode *head, int start, int end)
 {
-    // kiểm tra vị trí các node trái và phải có hợp lệ hay không -> cho biết điểm dừng xây dụng cây nhị phânphân
+    // kiểm tra vị trí các node trái và phải có hợp lệ hay không 
     if (head == NULL || start > end)
     {
         return NULL;
@@ -187,7 +187,7 @@ static CenterPoint *BuildTree(UserNode *head, int start, int end)
 
     // cấp phát vùng nhớ heap để lưu trữ nhánh gốc cho cây nhị phân
     CenterPoint *proot = (CenterPoint *)malloc(sizeof(CenterPoint));
-    proot->root = node->next;
+    proot->root = node;
     // tạo ra các nhánh 2 trái phải từ nhánh gốc
     proot->left = BuildTree(head, start, mid - 1);
     proot->right = BuildTree(node->next, mid + 1, end);

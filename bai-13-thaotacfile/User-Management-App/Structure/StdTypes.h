@@ -1,10 +1,9 @@
 /********************************************************
  *******************
- * @file ManageUser.h
+ * @file StdTypes.h
  * @brief Khai báo các thư viện, kiểu dữ liệu chia sẻ chung cho toàn bộ hệ thống,
  *        Header này có thể được include bởi tất cả module 
  * @version 1.0
- * @date 2025-16-8
  * @author Pham Cao Duy
  *********************************************************
  ******************/

@@ -1,16 +1,15 @@
 /********************************************************
  *******************
- * @file BuildTree.h
+ * @file SEARCH_USER.h
  * @brief Khai báo các hàm để triển khai thuật toán tìm kiếm thông tin user
  * @details File này cung cấp định nghĩa các hàm Build_SearchList,Search_User,Remove_SearchList 
  *          Header này chỉ nên được include bởi module App
  * @version 1.0
- * @date 2025-16-8
  * @author Pham Cao Duy
  *********************************************************
  ******************/
-#ifndef BUILDTREE_H
-#define BUILDTREE_H
+#ifndef SEARCH_USER_H
+#define SEARCH_USER_H
 #include "CenterPoint.h"
 
 /**

@@ -4,11 +4,10 @@
  * @details File này cung cấp định nghĩa các hàm Print_ListUser, Build_ListUser, Remove_ListUser
  *          Header này chỉ nên được include bởi module App
  * @version 1.0
- * @date 2025-16-8
  * @author Pham Cao Duy
 **/
-#ifndef MANAGEUSER_H
-#define MANAGEUSER_H
+#ifndef MANAGE_USER_H
+#define MANAGE_USER_H
 #include "UserNode.h"
 /**
  * @brief   Hàm in ra thông tin của toàn bộ user 

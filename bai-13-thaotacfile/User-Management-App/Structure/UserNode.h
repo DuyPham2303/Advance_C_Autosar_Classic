@@ -1,15 +1,14 @@
 /********************************************************
  *******************
- * @file ManageUser.h
+ * @file UserNODE.h
  * @brief Khai báo cấu trúc để tổ chức và lưu trữ thông tin của User dưới dạng danh sách liên kết
  *        Header này chỉ nên được include bởi module Service 
  * @version 1.0
- * @date 2025-16-8
  * @author Pham Cao Duy
  *********************************************************
  ******************/
-#ifndef USERNODE_H
-#define USERNODE_H
+#ifndef USER_NODE_H
+#define USER_NODE_H
 #include "UserData.h"
 
 /**

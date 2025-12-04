@@ -1,16 +1,15 @@
 /********************************************************
  *******************
- * @file ManageUser.h
+ * @file UserData.h
  * @brief Khai báo cấu trúc lưu dữ liệu User 
  * @details File này cung cấp định nghĩa cấu trúc chứa các trường thông tin của user,
  *          Header này chỉ nên được include bởi module Service,UserNode,CenterPoint
  * @version 1.0
- * @date 2025-16-8
  * @author Pham Cao Duy
  *********************************************************
  ******************/
-#ifndef DATASTRUCTURE_H
-#define DATASTRUCTURE_H
+#ifndef USER_DATA_H
+#define USER_DATA_H
 #include "StdTypes.h"
 
 /*

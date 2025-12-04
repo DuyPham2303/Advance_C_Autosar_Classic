@@ -3,7 +3,7 @@ uint8_t total_user = 0; // biến toàn cục đếm số lượng user
 
 static Info *parse_line(char *line)
 {
-    // cấp phát 1 vùn nhớ tạm để lưu trữ thông tin của user hiện tại
+    // cấp phát 1 vùng nhớ tạm để lưu trữ thông tin của user hiện tại
     Info *info = (Info *)malloc(sizeof(Info));
     char *token; // con trỏ lưu trữ giá trị tạm thời
 

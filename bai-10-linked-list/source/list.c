@@ -2,6 +2,37 @@
 
 static Node *getLast(Node *head);
 
+void list_log(ListStatus st, const char *msg)
+{
+
+    const char *name = "unknown";
+
+    switch (st)
+    {
+    case LIST_OK:
+        name = "OK";
+        break;
+    case LIST_EMPTY:
+        name = "EMPTY";
+        break;
+    case LIST_OUT_OF_RANGE:
+        name = "OUT OF RANGE";
+        break;
+    case LIST_ALLOC_FAILED:
+        name = "ALLOC FAILED";
+        break;
+    case LIST_NULL:
+        name = "NULL ARGS";
+        break;
+    default:
+        break;
+    }
+
+    if(msg)
+        printf("[%s] : %s\n",name,msg);
+    else
+        printf("[%s] : unknown msg\n",name);
+}
 // Tạo node, kiểm tra lỗi cấp phát
 Node *CreateNode(int val, ListStatus *status)
 {
@@ -19,16 +50,17 @@ Node *CreateNode(int val, ListStatus *status)
 
 void printNode(Node *head)
 {
-    if (empty(head))
+    if (head == NULL)
     {
         printf("empty list");
         return;
     }
-    Node *current = head;
-    while (current != NULL)
+    Node *currentt = head;
+    printf("print nodes : ");
+    while (currentt != NULL)
     {
-        printf("%d\t", current->val);
-        current = current->next;
+        printf("%d\t", currentt->val);
+        currentt = currentt->next;
     }
     printf("\n");
 }
@@ -36,56 +68,44 @@ void printNode(Node *head)
 int size(Node *head)
 {
     int count = 0;
-    Node *current = head;
-    while (current != NULL)
+    Node *currentt = head;
+    while (currentt != NULL)
     {
         count++;
-        current = current->next;
+        currentt = currentt->next;
     }
     return count;
 }
 
 ListStatus front(Node *head, int *out)
 {
-    if (head == NULL) return LIST_EMPTY;
-    if (out) *out = head->val;
+    if (head == NULL)
+        return LIST_EMPTY;
+    if (out)
+        *out = head->val;
     return LIST_OK;
 }
 
 ListStatus back(Node *head, int *out)
 {
-    if (head == NULL) return LIST_EMPTY;
+    if (head == NULL)
+        return LIST_EMPTY;
 
     Node *last = getLast(head);
-    if (out) *out = last->val;
-    return LIST_OK;
-}
-
-ListStatus get(Node *head, int pos, int *out)
-{
-    if (head == NULL) return LIST_EMPTY;
-
-    int listSize = size(head);
-    if (pos < 0 || pos >= listSize) return LIST_OUT_OF_RANGE;
-
-    Node *current = head;
-    int index = 0;
-    while (index < pos)
-    {
-        current = current->next;
-        index++;
-    }
-    if (out) *out = current->val;
+    if (out)
+        *out = last->val;
     return LIST_OK;
 }
 
 ListStatus push_front(Node **head, int value)
 {
-    if (head == NULL) return LIST_NULL;
+    if (head == NULL)
+        return LIST_NULL;
 
     ListStatus status;
     Node *node = CreateNode(value, &status);
-    if (status != LIST_OK) return status;
+    if (status != LIST_OK)
+        return status;
 
     node->next = *head;
     *head = node;
@@ -94,11 +114,13 @@ ListStatus push_front(Node **head, int value)
 
 ListStatus push_back(Node **head, int value)
 {
-    if (head == NULL) return LIST_NULL;
+    if (head == NULL)
+        return LIST_NULL;
 
     ListStatus status;
     Node *node = CreateNode(value, &status);
-    if (status != LIST_OK) return status;
+    if (status != LIST_OK)
+        return status;
 
     if (*head == NULL)
     {
@@ -113,8 +135,10 @@ ListStatus push_back(Node **head, int value)
 
 ListStatus pop_front(Node **head)
 {
-    if (head == NULL) return LIST_NULL;
-    if (*head == NULL) return LIST_EMPTY;
+    if (head == NULL)
+        return LIST_NULL;
+    if (*head == NULL)
+        return LIST_EMPTY;
 
     Node *temp = *head;
     *head = (*head)->next;
@@ -124,86 +148,123 @@ ListStatus pop_front(Node **head)
 
 ListStatus pop_back(Node **head)
 {
-    if (head == NULL) return LIST_NULL;
-    if (*head == NULL) return LIST_EMPTY;
+    if (head == NULL)
+        return LIST_NULL;
+    if (*head == NULL)
+        return LIST_EMPTY;
 
-    Node *current = *head;
+    Node *currentt = *head;
 
-    if (current->next == NULL)
+    if (currentt->next == NULL)
     {
-        free(current);
+        free(currentt);
         *head = NULL;
         return LIST_OK;
     }
 
-    while (current->next->next != NULL)
-        current = current->next;
+    while (currentt->next->next != NULL)
+        currentt = currentt->next;
 
-    free(current->next);
-    current->next = NULL;
+    free(currentt->next);
+    currentt->next = NULL;
     return LIST_OK;
 }
 
+// Chèn node ở vị trí bất kỳ
 ListStatus insert(Node **head, int value, int position)
 {
-    if (head == NULL) return LIST_NULL;
+    if (head == NULL)
+        return LIST_NULL;
 
-    int listSize = size(*head);
-    if (position < 0 || position > listSize) return LIST_OUT_OF_RANGE;
+    int listsize = size(*head);
 
-    if (position == 0) return push_front(head, value);
-    if (position == listSize) return push_back(head, value);
+    // kiểm tra vị trí hợp lệ -> giá trị position có nằm trong khoảng cho phép
+    // if (position < 1 || position > listsize + 1)
+    //     return LIST_OUT_OF_RANGE;
 
-    ListStatus status;
-    Node *new_node = CreateNode(value, &status);
-    if (status != LIST_OK) return status;
+    // Xử lý thêm ở đầu / cuối list
+    if (position <= 1)
+        return push_front(head, value);
 
-    Node *current = *head;
-    int index = 0;
+    else if (position >= listsize + 1)
+        return push_back(head, value);
 
-    while (index < position - 1)
+    else
     {
-        current = current->next;
-        index++;
-    }
+        ListStatus st;
 
-    new_node->next = current->next;
-    current->next = new_node;
-    return LIST_OK;
+        Node *new_node = CreateNode(value, &st);
+
+        if (st != LIST_OK)
+            return st;
+
+        int index = 1;
+
+        Node *currentt = *head;
+
+        // lặp đến node ở trước vị trí cần insert
+        while (index < position - 1)
+        {
+            /* cach 1 */
+            currentt = currentt->next;
+            /* cach 2 */
+            //(*head) = (*head)->next;
+            index++;
+        }
+
+        // cập nhật vị trí của node cần insert
+        new_node->next = currentt->next;
+        currentt->next = new_node;
+        return st;
+    }
 }
 
+// Xoá node ở vị trí bất kỳ
 ListStatus erase(Node **head, int position)
 {
-    if (head == NULL) return LIST_NULL;
-    if (*head == NULL) return LIST_EMPTY;
+    if (head == NULL)
+        return LIST_NULL;
 
-    int listSize = size(*head);
-    if (position < 0 || position >= listSize) return LIST_OUT_OF_RANGE;
+    if (*head == NULL)
+        return LIST_EMPTY;
 
-    if (position == 0) return pop_front(head);
-    if (position == listSize - 1) return pop_back(head);
+    int listsize = size(*head);
 
-    Node *current = *head;
-    int index = 0;
+    // kiểm tra position có hợp lệ
+    // if (position < 1 || position > listsize)
+    //     return LIST_OUT_OF_RANGE;
+
+    // Xử lý xóa ở đầu / cuối list
+    if (position <= 1)
+        return pop_front(head);
+
+    else if (position >= listsize)
+        return pop_back(head);
+
+    Node *currentt = *head;
+    int index = 1;
 
     while (index < position - 1)
     {
-        current = current->next;
+        currentt = currentt->next;
         index++;
     }
 
-    Node *temp = current->next;
-    current->next = temp->next;
+    Node *temp = currentt->next;
+    currentt->next = temp->next;
     free(temp);
 
     return LIST_OK;
 }
 
+// Xoá toàn bộ list
 ListStatus clear(Node **head)
 {
-    if (head == NULL) return LIST_NULL;
+    if (head == NULL)
+        return LIST_NULL;
 
     Node *temp;
+
     while (*head != NULL)
     {
         temp = *head;
@@ -213,10 +274,37 @@ ListStatus clear(Node **head)
     return LIST_OK;
 }
 
+ListStatus get(Node *head, int pos, int *out)
+{
+    if (head == NULL)
+        return LIST_EMPTY;
+
+    int listsize = size(head);
+
+    // xử lý đọc node đầu / cuối
+    if (pos == 1)
+        return front(head, out);
+
+    else if (pos > listsize)
+        return back(head, out);
+
+    Node *current = head;
+    int index = 1;
+
+    while (index < pos)
+    {
+        current = current->next;
+        index++;
+    }
+
+    *out = current->val;
+    return LIST_OK;
+}
 
 static Node *getLast(Node *head)
 {
-    if (head == NULL) return NULL;
+    if (head == NULL)
+        return NULL;
     while (head->next != NULL)
         head = head->next;
     return head;

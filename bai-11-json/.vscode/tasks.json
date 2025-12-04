@@ -7,19 +7,13 @@
             "args": [
                 "-fdiagnostics-color=always",
                 "-g",
-                "-Wall",
-                "-Warray-bounds",
-                "-Werror",
-                "-Wextra",
                 "-std=c17",
-                "parseJson.c",
-                "readfile.c",
-                "main.c",
-                //"${file}",
-                //"*.c",
+                //"parseJson.c",
+                //"readfile.c",
+                "${file}",
                 "-o",
-                "${fileDirname}\\${fileBasenameNoExtension}.exe"
-                //"main.exe"
+                "${fileDirname}//main.exe",
+                "-lws2_32"
             ],
             "options": {
                 "cwd": "${fileDirname}"

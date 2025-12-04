@@ -1,16 +1,15 @@
 /********************************************************
  *******************
- * @file FileOperation.h
+ * @file ManageDB.h
  * @brief Khai báo các hàm để truy cập / lưu trữ dữ liệu từ database
  * @details File này cung cấp định nghĩa các hàm Load_UserDB,Print_UserDB,Remove_UserDB, 
  *          Header này chỉ nên được include bởi module App
  * @version 1.0
- * @date 2025-16-8
  * @author Pham Cao Duy
  *********************************************************
  ******************/
-#ifndef ManageDB_H
-#define ManageDB_H
+#ifndef MANAGE_DB_H
+#define MANAGE_DB_H
 #include "UserData.h"
 
 /**

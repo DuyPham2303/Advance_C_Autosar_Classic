@@ -4,7 +4,6 @@
  * @brief Khai báo các hàm để nhập dữ liệu từ bàn phím
  * @details File này cung cấp giao diện cho việc nhập giá trị số và chuỗi ký tự
  * @version 1.0
- * @date 2025-16-8
  * @author Pham Cao Duy
  *********************************************************
  ******************/

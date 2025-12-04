@@ -1,6 +1,6 @@
 #include "search.h"
 
-static int stringCompare(const char *str1, const char *str2)
+int stringCompare(const char *str1, const char *str2)
 {
     // kiểm tra ký tự str1 có khác null không và ký tự hiện tại của 2 chuỗi có giống nhau khôngkhông
     while (*str1 && (*str1 == *str2))
@@ -10,16 +10,8 @@ static int stringCompare(const char *str1, const char *str2)
     }
     return (*(const unsigned char *)str1 - *(const unsigned char *)str2);
 }
-static CenterPoint *binarySearch(CenterPoint **root, CenterPoint *current, const char *search)
+static CenterPoint *binarySearch(CenterPoint *current, const char *search)
 {
-    /*
-    *NOTE: the address of base root which is the pointer to the array of BST must not be changed
-    -> therefore we have to pass root as input paramter everytime we call binarySearch function
-    Lưu ý:
-     + root là con trỏ lưu giữ địa chỉ mảng chứa cây nhị phân, được sử dụng
-       để giữ liên kết không bị lỗi mất đồng bộ khi ta thực hiện thay đổi địa chỉ trỏ đến trên cây nhị phân cụ thể
-     + current là con trỏ đến cây nhị phân hiện tại, và sẽ được dùng để lặp qua từng nhánh để kiểm tra
-     */
     if (current == NULL)
     {
         return NULL;
@@ -34,36 +26,40 @@ static CenterPoint *binarySearch(CenterPoint **root, CenterPoint *current, const
     }
     // if search < current -> find the left side of tree
     if (stringCompare(current_info, search) > 0)
-        return binarySearch(root, current->left, search);
+        return binarySearch(current->left, search);
     // if search > current -> find the right side of tree
     else
-        return binarySearch(root, current->right, search);
+        return binarySearch(current->right, search);
 }
 CenterPoint *buildTree(User_node *head, int start, int end)
 {
-    // kiểm tra vị trí các node trái và phải có hợp lệ hay không -> cho biết điểm dừng xây dụng cây nhị phânphân
+    // kiểm tra vị trí các node trái và phải có hợp lệ hay không 
     if (head == NULL || start > end)
     {
         return NULL;
     }
-    // xác định node giữa của danh sáchsách
+    // xác định vị trí node giữa 
     int mid = (start + end) / 2;
+
+    //con trỏ tạm để lặp qua từng node
     User_node *node = head;
-    // lặp cho đến khi gặp node giữagiữa
+
+    // lặp cho đến khi gặp node giữa
     for (int i = start; i < mid; i++)
     {
         if (node->next_user == NULL)
         {
             break;
         }
-        // move to next node
         node = node->next_user;
     }
 
-    // cấp phát vùng nhớ heap để lưu trữ nhánh gốc cho cây nhị phân
+    // cấp phát bộ nhớ cho từng node (mỗi lần gọi đệ quy)
     CenterPoint *root = (CenterPoint *)malloc(sizeof(CenterPoint));
-    root->user = node->next_user;
-    // tạo ra các nhánh 2 trái phải từ nhánh gốc
+
+    //cập nhật node trên root hiện tại của cây nhị phân 
+    root->user = node;  
+    // tạo ra các nhánh 2 trái phải từ nhánh gốc, bằng cách gọi đệ quy
     root->left = buildTree(head, start, mid - 1);
     root->right = buildTree(node->next_user, mid + 1, end);
 
@@ -90,7 +86,7 @@ CenterPoint *Search_Info(CenterPoint **root, const char *search)
     // xác định cây nhị phân sẽ sử dụng tìm kiếm dựa trên chuỗi search -> nếu phát hiện ký tự số thì trả về cây nhị phân tìm kiếm dựa trên sdt
     CenterPoint *search_info = isdigit(*search) ? root[1] : root[0];
     // trả về kết quả tìm kiếm
-    return binarySearch(root, search_info, search);
+    return binarySearch(search_info, search);
 }
 void print_Search_byPhone(CenterPoint *root)
 {
@@ -108,7 +104,6 @@ void print_Search_byName(CenterPoint *root, User_node *head)
 {
     User_node *search_user = root->user;
     User_node *current = head;
-    /* Find and print info of all user with the same name */
     // tìm và in ra tất cả thông tin của user có tên trùng nhau
     while (current != NULL)
     {
@@ -119,8 +114,12 @@ void print_Search_byName(CenterPoint *root, User_node *head)
         }
         else
         {
-            // bỏ qua trường hợp tìm thấy sdt của user trong danh sách trùng với thông tin của user đang tìm kiếm theo name
-            //-> tránh trường hợp in thông tin của user muốn tìm kiếm 2 lần
+            //note 
+            /* 
+                - bỏ qua trường hợp tìm thấy sdt của user trong danh sách trùng với thông tin của user đang tìm kiếm theo name
+                - tránh trường hợp in thông tin của user muốn tìm kiếm 2 lần
+            */
+
             if (!strcmp(current->info.phone, search_user->info.phone))
                 current = current->next_user;
             // in thông tin của tất cả user có name giống nhưng khác phone
@@ -139,7 +138,11 @@ void print_Search_byName(CenterPoint *root, User_node *head)
             }
         }
     }
-    // in thông tin của user duy nhất cần tìm (không bị trùng tên)
+    //note 
+    /* 
+        - Nếu đã kiểm tra toàn bộ node, chứng tỏ không có đối tượng nào trùng tên
+        - In ra thông tin của đối tượng có tên không trùng với bất kỳ ai
+    */
     printf("Tên:%s\n"
            "Tuổi:%d\n"
            "sdt:%s\n"

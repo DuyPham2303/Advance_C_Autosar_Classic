@@ -7,18 +7,17 @@
 
 typedef struct Node 
 {
-    struct Node *next; 
     int val;
+    struct Node *next; 
 }Node;
 
-/* Error codes for list operations. Using legacy enum names as requested. */
 typedef enum ListStatus
 {
     LIST_OK = 0,
-    LIST_EMPTY,          /* Operation on empty list */
-    LIST_OUT_OF_RANGE,   /* Index out of range */
-    LIST_ALLOC_FAILED,   /* Out of memory / allocation failure */
-    LIST_NULL            /* Invalid/null argument */
+    LIST_EMPTY,         
+    LIST_OUT_OF_RANGE,   
+    LIST_ALLOC_FAILED,   
+    LIST_NULL           
 }ListStatus;
 
 Node *CreateNode(int val, ListStatus *status);
@@ -61,5 +60,7 @@ ListStatus erase(Node **head, int position);
 
 // Xoá toàn bộ list
 ListStatus clear(Node **head);
+
+void list_log(ListStatus st , const char* msg);
 
 #endif // LIST_H

@@ -23,17 +23,6 @@ void addSensor(Sensor** head, SENSOR_ID id, float value) {
     *head = newSensor;
 }
 
-//Hàm cập nhật data Sensor
-void updateSensor(Sensor* head, SENSOR_ID id, float newValue) {
-    while(head) {
-        if (head->sensorID == id) {
-            head->value = newValue;
-            return;
-        }
-        head = head->next;
-    }
-    printf("Sensor ID %d not found\n", id);
-}
 void printSensors(Sensor* head) {
     printf("=== Active Sensors ===\n");
     if(head == NULL){
@@ -47,36 +36,5 @@ void printSensors(Sensor* head) {
                head->value,
                unit[head->sensorID]);
         head = head->next;
-    }
-}
-void deleteSensor(Sensor** head, SENSOR_ID id) {
-    Sensor* curr = *head;
-    Sensor* prev = NULL;
-    while (curr != NULL) {
-        if (curr->sensorID == id) {
-            
-            //trường hợp xóa node đầu 
-            if (prev == NULL) {
-                *head = curr->next; //cập nhật node đầu của list
-            } 
-            //trường hợp xóa ở các vị trí còn lại
-            else {
-                prev->next = curr->next;
-            }
-            free(curr);
-            printf("Sensor ID %d deleted.\n", id);
-            return;
-        }
-        prev = curr;
-        curr = curr->next;
-    }
-    printf("Sensor ID %d not found.\n", id);
-}
-void freeSensors(Sensor** head) {
-    Sensor* temp;
-    while (*head) {
-        temp = *head;
-        *head = (*head)->next;
-        free(temp);
     }
 }

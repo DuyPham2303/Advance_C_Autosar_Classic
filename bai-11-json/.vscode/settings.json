@@ -18,6 +18,7 @@
         "memory_resource": "c",
         "memory": "c",
         "test1.h": "c",
-        "stdio.h": "c"
+        "stdio.h": "c",
+        "parsejson.h": "c"
     }
 }

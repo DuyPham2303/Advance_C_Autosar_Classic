@@ -5,7 +5,6 @@
  * @details File này cung cấp giao diện cho việc xây dụng menu nhanh chóng và hiệu quả
  * @scope   Public API – Có thể include từ các module khác.
  * @version 1.0
- * @date 2025-16-8
  * @author Pham Cao Duy
  *********************************************************
  ******************/

@@ -5,7 +5,6 @@
  * @details File này cung cấp định nghĩa các hàm Read_UserDB, Read_SizeUserDB, Read_ListUser
  *          và 1 số hàm khác, Header này chỉ nên được include cục bộ ở module hiện tại 
  * @version 1.0
- * @date 2025-16-8
  * @author Pham Cao Duy
  *********************************************************
  ******************/

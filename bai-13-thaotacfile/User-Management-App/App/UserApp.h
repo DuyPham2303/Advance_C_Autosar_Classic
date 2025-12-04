@@ -6,7 +6,6 @@
  *          ShowMainMenu, ExecuteEndProgram, ShowMenuListUser, ExecuteSearchUser
  *          Header này chỉ nên được include bởi module hiện tại
  * @version 1.0
- * @date 2025-16-8
  * @author Pham Cao Duy
  *********************************************************
  ******************/

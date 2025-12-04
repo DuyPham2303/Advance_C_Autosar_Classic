@@ -1,11 +1,10 @@
 /********************************************************
  *******************
- * @file ManageUser.h
+ * @file CenterPoint.h
  * @brief Khai báo cấu trúc lưu dữ thông tin user dưới dạng cây nhị phân tìm kiếm
  * @details File này cung cấp định nghĩa cấu trúc cây nhị phân,Header này chỉ nên được include bởi
  *          module Service
  * @version 1.0
- * @date 2025-16-8
  * @author Pham Cao Duy
  *********************************************************
  ******************/
